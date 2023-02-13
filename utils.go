@@ -1,6 +1,9 @@
 package sim2dcodec
 
-import "math"
+import (
+	"math"
+	"math/big"
+)
 
 func symmetricModulo(n, radix int64) (int64, error) {
 	var modulo, remainder int64
@@ -40,4 +43,17 @@ func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 		exp = append(exp, c)
 	}
 	return exp, nil
+}
+
+func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
+	// Dot product total.
+	t := big.NewRat(0, 1)
+	for i := 0; i < len(v2); i++ {
+		// Multiplication step.
+		f := big.NewRat(v2[i], 1)
+		f.Mul(f, v1[i])
+		// Addition step.
+		t.Add(t, f)
+	}
+	return t
 }
