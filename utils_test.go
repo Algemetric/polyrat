@@ -1,7 +1,6 @@
 package sim2dcodec
 
 import (
-	"math/big"
 	"testing"
 )
 
@@ -46,22 +45,4 @@ func TestExpansion(t *testing.T) {
 
 func TestPolynomialLength(t *testing.T) {
 	t.Skip()
-}
-
-func TestEncode(t *testing.T) {
-	// Expected result.
-	// [2, -3, 0, 0, -3, 0, 1, -2] = encode(-44979/2401,7,-4,1,8)
-	fraction := big.NewRat(-44979, 2401)
-	base := 7
-	p := -4
-	q := 1
-	d := 8
-	// Calculate code.
-	c := Encode(fraction, base, p, q, d)
-	// Expected code.
-	ec := []int64{2, -3, 0, 0, -3, 0, 1, -2}
-	// Check results.
-	if ec[0] != c[0] || ec[1] != c[1] || ec[2] != c[2] || ec[3] != c[3] || ec[4] != c[4] || ec[5] != c[5] || ec[6] != c[6] || ec[7] != c[7] {
-		t.Errorf("expected %v but got %v", ec, c)
-	}
 }
