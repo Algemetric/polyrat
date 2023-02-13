@@ -7,7 +7,12 @@ import (
 
 func symmetricModulo(n, radix int64) (int64, error) {
 	var modulo, remainder int64
+	// Check radix value.
+	if radix == 0 {
+		return modulo, ErrInvalidRadix
+	}
 	remainder = n % radix
+
 	modulo = remainder + radix
 	halfRadix := float64(-radix) / 2.0
 	if remainder <= 0 && halfRadix < float64(remainder) {
@@ -34,6 +39,7 @@ func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 			return nil, err
 		}
 		// First operand.
+		// b^(e+1).
 		nb *= b
 		fo, err := symmetricModulo(numerator, int64(nb))
 		if err != nil {

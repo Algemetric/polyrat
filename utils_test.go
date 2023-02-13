@@ -18,12 +18,15 @@ func TestSymmetricModulo(t *testing.T) {
 	if m != 0 {
 		t.Errorf("expected %d but got %d", em, m)
 	}
-	// Value for radix should trigger an error.
-	// n = -44979
-	// r = 0
+	// Value for radix = 0 should trigger an error.
+	r = int64(0)
 	// Calculates the symmetric modulo.
-	// Checks if function throwns an error.
-	// m = symmetricModulo(n, r)
+	// Checks if function throws an error.
+	m, err = symmetricModulo(n, r)
+	// fmt.Printf("m = %d, err = %s", m, err.Error())
+	if err == nil {
+		t.Error("radix 0 should throw an error")
+	}
 }
 
 func TestExpansion(t *testing.T) {
