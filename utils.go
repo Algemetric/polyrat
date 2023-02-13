@@ -8,11 +8,10 @@ import (
 func symmetricModulo(n, radix int64) (int64, error) {
 	var modulo, remainder int64
 	remainder = n % radix
+	modulo = remainder + radix
 	halfRadix := float64(-radix) / 2.0
 	if remainder <= 0 && halfRadix < float64(remainder) {
-		modulo = remainder
-	} else {
-		modulo = remainder + radix
+		modulo -= radix
 	}
 	return modulo, nil
 }
@@ -23,23 +22,24 @@ func polynomialLength(q, p int) int {
 
 func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 	var exp []float64
-	var baseJPlus, baseJ, c float64
-	var a, b int64
-	var err error
+	// Base as a float 64 bits.
+	b := float64(base)
 	for i := 0; i < polyLength; i++ {
-		// a = SymMod(numerator, base^(j+1))
-		baseJPlus = math.Pow(float64(base), float64(i+1))
-		a, err = symmetricModulo(numerator, int64(baseJPlus))
+		// Exponent.
+		e := float64(i)
+		// Second operand.
+		nb := math.Pow(b, e)
+		so, err := symmetricModulo(numerator, int64(nb))
 		if err != nil {
 			return nil, err
 		}
-		// b = SymMod(numerator, base^j)
-		baseJ = math.Pow(float64(base), float64(i))
-		b, err = symmetricModulo(numerator, int64(baseJ))
+		// First operand.
+		nb *= b
+		fo, err := symmetricModulo(numerator, int64(nb))
 		if err != nil {
 			return nil, err
 		}
-		c = float64(a-b) / baseJ
+		c := float64(fo-so) / (nb / b)
 		exp = append(exp, c)
 	}
 	return exp, nil
