@@ -34,7 +34,7 @@ func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 		baseJ = math.Pow(float64(base), float64(i))
 		b, err = symmetricModulo(numerator, int64(baseJ))
 		if err != nil {
-			panic("fix this error treatment")
+			return nil, err
 		}
 		c = float64(a-b) / baseJ
 		exp = append(exp, c)
