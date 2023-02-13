@@ -8,10 +8,7 @@ import (
 
 func TestDecode(t *testing.T) {
 	f := big.NewRat(-44979, 2401)
-	b := 7
-	p := -4
-	q := 1
-	d := 8
+	b, p, q, d := 7, -4, 1, 8
 	c, err := Encode(f, b, p, q, d)
 	if err != nil {
 		t.Error(err)
