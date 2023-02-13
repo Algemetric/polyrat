@@ -12,9 +12,12 @@ func TestDecode(t *testing.T) {
 	p := -4
 	q := 1
 	d := 8
-	c := Encode(f, b, p, q, d)
+	c, err := Encode(f, b, p, q, d)
+	if err != nil {
+		t.Error(err)
+	}
 	rf := Decode(c, b, p, q)
 	if strings.Compare(f.String(), rf.String()) != 0 {
-		t.Errorf("error decoding")
+		t.Errorf("error decoding, expected %s but got %s", f.String(), rf.String())
 	}
 }

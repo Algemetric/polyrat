@@ -5,17 +5,20 @@ import (
 )
 
 // Encode encodes a fraction into a polynomial.
-func Encode(fraction *big.Rat, b, p, q, d int) []int64 {
+func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
 	// Length of the polynomial.
 	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.
 	n := fraction.Num().Int64()
 	// Calculate expansion.
-	e := expansion(pl, b, n)
+	e, err := expansion(pl, b, n)
+	if err != nil {
+		return nil, err
+	}
 	// Generate encoding (code).
 	c := code(p, pl, d, e)
 	// return encoding
-	return c
+	return c, nil
 }
 
 func code(p, l, d int, exp []float64) []int64 {
@@ -33,5 +36,6 @@ func code(p, l, d int, exp []float64) []int64 {
 	for i := 0; i < -p; i++ {
 		c = append(c, -int64(exp[i]))
 	}
+	// Return code.
 	return c
 }

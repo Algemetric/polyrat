@@ -11,7 +11,10 @@ func TestEncode(t *testing.T) {
 	f := big.NewRat(-44979, 2401)
 	b, p, q, d := 7, -4, 1, 8
 	// Calculate code.
-	c := Encode(f, b, p, q, d)
+	c, err := Encode(f, b, p, q, d)
+	if err != nil {
+		t.Error(err)
+	}
 	// Expected code.
 	// [2, -3, 0, 0, -3, 0, 1, -2] = encode(-44979/2401,7,-4,1,8)
 	ec := []int64{2, -3, 0, 0, -3, 0, 1, -2}
@@ -27,7 +30,7 @@ func TestEncode(t *testing.T) {
 func ExampleEncode() {
 	f := big.NewRat(-44979, 2401)
 	b, p, q, d := 7, -4, 1, 8
-	c := Encode(f, b, p, q, d)
+	c, _ := Encode(f, b, p, q, d)
 	fmt.Println(c)
 	// Output: [2 -3 0 0 -3 0 1 -2]
 }

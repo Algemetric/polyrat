@@ -34,7 +34,10 @@ func TestExpansion(t *testing.T) {
 	q := 1
 	pl := polynomialLength(q, p)
 	// Calculate expansion.
-	e := expansion(pl, r, n)
+	e, err := expansion(pl, r, n)
+	if err != nil {
+		t.Error(err)
+	}
 	// Expected expansion.
 	ee := []float64{3.0, 0.0, -1.0, 2.0, 2.0, -3.0}
 	// Check if calculated expansion matches the expected values of [3, 0, -1, 2, 2, -3].

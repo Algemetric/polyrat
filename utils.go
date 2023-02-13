@@ -18,7 +18,7 @@ func polynomialLength(q, p int) int {
 	return q + (-1 * p) + 1
 }
 
-func expansion(polyLength, base int, numerator int64) []float64 {
+func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 	var exp []float64
 	var baseJPlus, baseJ, c float64
 	var a, b int64
@@ -28,7 +28,7 @@ func expansion(polyLength, base int, numerator int64) []float64 {
 		baseJPlus = math.Pow(float64(base), float64(i+1))
 		a, err = symmetricModulo(numerator, int64(baseJPlus))
 		if err != nil {
-			panic("fix this error treatment")
+			return nil, err
 		}
 		// b = SymMod(numerator, base^j)
 		baseJ = math.Pow(float64(base), float64(i))
@@ -39,5 +39,5 @@ func expansion(polyLength, base int, numerator int64) []float64 {
 		c = float64(a-b) / baseJ
 		exp = append(exp, c)
 	}
-	return exp
+	return exp, nil
 }
