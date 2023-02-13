@@ -4,28 +4,9 @@ import (
 	"math/big"
 )
 
-/*
-
-#p: smallest power (negative)
-#q: largest power (positive)
-#d: degree of modulus
-#base: base of Laurent expansion
-
-def SIM2DDecode(input,base,p,q):
-  l = len(input)
-  decode = vector([-1*input[l+p+i]for i in range(-p)]+input[:q+1])
-  xval = vector([base^(p+i) for i in range(q-p+1)])
-  fraction = decode*xval
-  return fraction
-
-Example:
-
--44979/2401 = SIM2DDecode([2, -3, 0, 0, -3, 0, 1, -2],7,-4,1)
-
-*/
-
-func Decode(code []int64, base, p, q int) *big.Rat {
-	// l = len(input)
+// Decode decodes a polynomial into its original fraction.
+func Decode(code []int64, b, p, q int) *big.Rat {
+	// Code length.
 	l := len(code)
 	// decode = vector([ -1 * input[l+p+i] for i in range(-p) ] + input[:q+1])
 	var original []int64
@@ -38,38 +19,50 @@ func Decode(code []int64, base, p, q int) *big.Rat {
 	}
 
 	// xval = vector([base^(p+i) for i in range(q-p+1)])
+	xval := xVal(b, q, p)
+
+	total := dotProduct(xval, original)
+
+	return total
+}
+
+func xVal(b, q, p int) []*big.Rat {
+	// Decoded fraction.
 	var xval []*big.Rat
-	// var xval []float64
-	count := q + (-1 * p) + 1
-	for i := 0; i < count; i++ {
-		frac := big.NewRat(1, 1)
+	// Base in 64 bits.
+	b64 := int64(b)
+	// Polynomial length.
+	pl := polynomialLength(q, p)
+	for i := 0; i < pl; i++ {
+		// Fraction.
+		f := big.NewRat(1, 1)
 		// TODO: find a trustworthy way.
 		if p+i < 0 {
 			e := big.NewInt(int64(-1 * (p + i)))
-			basePow := big.NewInt(int64(base))
+			basePow := big.NewInt(b64)
 			basePow.Exp(basePow, e, nil)
-			frac.SetFrac(basePow, big.NewInt(1))
-			frac.Inv(frac)
+			f.SetFrac(basePow, big.NewInt(1))
+			f.Inv(f)
 		} else {
-			basePow := big.NewInt(int64(base))
+			basePow := big.NewInt(b64)
 			basePow.Exp(basePow, big.NewInt(int64(p+i)), nil)
-			frac.SetInt(basePow)
+			f.SetInt(basePow)
 		}
 		// (1/2401, 1/343, 1/49, 1/7, 1, 7)
-		xval = append(xval, frac)
+		xval = append(xval, f)
 	}
+	return xval
+}
 
-	// fraction = decode*xval
-	// This means a dot product in Sage.
-	total := big.NewRat(0, 1)
-	for i := 0; i < len(original); i++ {
+func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
+	// Dot product total.
+	t := big.NewRat(0, 1)
+	for i := 0; i < len(v2); i++ {
 		// Multiplication step.
-		f := big.NewRat(original[i], 1)
-		f.Mul(f, xval[i])
+		f := big.NewRat(v2[i], 1)
+		f.Mul(f, v1[i])
 		// Addition step.
-		total.Add(total, f)
+		t.Add(t, f)
 	}
-
-	// -44979/2401 = -18.7334443982
-	return total
+	return t
 }
