@@ -20,9 +20,8 @@ func Decode(code []int64, b, p, q int) *big.Rat {
 
 	xval := xVal(b, q, p)
 
-	total := dotProduct(xval, original)
-
-	return total
+	// Return fraction.
+	return dotProduct(xval, original)
 }
 
 func xVal(b, q, p int) []*big.Rat {
