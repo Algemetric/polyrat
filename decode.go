@@ -37,16 +37,17 @@ func xVal(b, q, p int) []*big.Rat {
 		// Fraction.
 		f := big.NewRat(1, 1)
 		// TODO: find a trustworthy way.
-		if p+i < 0 {
-			e := big.NewInt(int64(-1 * (p + i)))
-			basePow := big.NewInt(b64)
-			basePow.Exp(basePow, e, nil)
-			f.SetFrac(basePow, big.NewInt(1))
+		pPlusI := int64(p + i)
+		if pPlusI < 0 {
+			e := big.NewInt(int64(-1 * pPlusI))
+			base := big.NewInt(b64)
+			base.Exp(base, e, nil)
+			f.SetFrac(base, big.NewInt(1))
 			f.Inv(f)
 		} else {
-			basePow := big.NewInt(b64)
-			basePow.Exp(basePow, big.NewInt(int64(p+i)), nil)
-			f.SetInt(basePow)
+			base := big.NewInt(b64)
+			base.Exp(base, big.NewInt(pPlusI), nil)
+			f.SetInt(base)
 		}
 		// (1/2401, 1/343, 1/49, 1/7, 1, 7)
 		xval = append(xval, f)
