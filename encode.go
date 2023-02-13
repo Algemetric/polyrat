@@ -4,38 +4,18 @@ import (
 	"math/big"
 )
 
-/*
-#p: smallest power (negative)
-#q: largest power (positive)
-#d: degree of modulus
-#base: base of Laurent expansion
-
-Example:
-
-[2, -3, 0, 0, -3, 0, 1, -2] = SIM2DEncode(-44979/2401,7,-4,1,8)
-base = 7
-p = -4
-q = 1
-d = 8
-*/
-
-// Sizes:
-// base int
-// p int
-// q int
-// d int
-
-func Encode(fraction *big.Rat, base, p, q, d int) []int64 {
+// Encode encodes a fraction into a polynomial.
+func Encode(fraction *big.Rat, b, p, q, d int) []int64 {
 	// Length of the polynomial.
-	polyLength := polynomialLength(q, p)
+	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.
-	numerator := fraction.Num().Int64()
+	n := fraction.Num().Int64()
 	// Calculate expansion.
-	exp := expansion(polyLength, base, numerator)
+	e := expansion(pl, b, n)
 	// Generate encoding (code).
-	code := code(p, polyLength, d, exp)
+	c := code(p, pl, d, e)
 	// return encoding
-	return code
+	return c
 }
 
 func code(p, l, d int, exp []float64) []int64 {
