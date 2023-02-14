@@ -1,23 +1,39 @@
 package sim2dcodec
 
 import (
+	"fmt"
 	"math"
 	"math/big"
 )
 
-func symmetricModulo(n, radix int64) (int64, error) {
-	var modulo, remainder int64
-	// Check radix value.
-	if radix == 0 {
-		return modulo, ErrInvalidRadix
+func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
+	// Check initial radix value.
+	if r == 0 {
+		return nil, ErrInvalidRadix
 	}
-	remainder = n % radix
+	radix := big.NewInt(r)
+	// Modulo: numerator % radix.
+	remainder := big.NewInt(0)
+	remainder.Mod(n.Num(), radix)
+	fmt.Printf("\n%s mod %s = %s\n", n.Num().String(), radix.String(), remainder.String())
+	// Big int addition.
+	// modulo := remainder + radix
+	modulo := big.NewInt(0)
+	modulo.Add(modulo, remainder)
+	modulo.Add(modulo, radix)
+	// Half radix.
+	// halfRadix := -radix / 2.0
+	halfRadix := big.NewRat(-radix.Int64(), 2)
+	fmt.Printf("\nmodulo = %s, halfRadix = %s\n", modulo.String(), halfRadix.String())
 
-	modulo = remainder + radix
-	halfRadix := float64(-radix) / 2.0
-	if remainder <= 0 && halfRadix < float64(remainder) {
-		modulo -= radix
+	// remainder <= 0 && halfRadix < remainder.
+	// To execute "<=0" we need to do "<0" and "==0" separately.
+	zero := big.NewInt(0)
+	remainderFraction := big.NewRat(remainder.Int64(), 1)
+	if (remainder.Cmp(zero) == -1 || remainder.Cmp(zero) == 0) && (halfRadix.Cmp(remainderFraction) == -1) {
+		modulo.Sub(modulo, radix)
 	}
+
 	return modulo, nil
 }
 
@@ -25,7 +41,7 @@ func polynomialLength(q, p int) int {
 	return q + (-1 * p) + 1
 }
 
-func expansion(polyLength, base int, numerator int64) ([]float64, error) {
+func expansion(polyLength, base int, numerator *big.Rat) ([]float64, error) {
 	var exp []float64
 	// Base as a float 64 bits.
 	b := float64(base)
@@ -40,13 +56,17 @@ func expansion(polyLength, base int, numerator int64) ([]float64, error) {
 		}
 		// First operand.
 		// b^(e+1).
-		nb *= b
-		fo, err := symmetricModulo(numerator, int64(nb))
+		fo, err := symmetricModulo(numerator, int64(nb*b))
 		if err != nil {
 			return nil, err
 		}
-		c := float64(fo-so) / (nb / b)
-		exp = append(exp, c)
+		// (fo-so) / (nb / b)
+		fo.Sub(fo, so)
+		c := big.NewRat(fo.Int64(), int64(nb))
+
+		c2, _ := c.Float64()
+		fmt.Printf("\nc = %s", c.String())
+		exp = append(exp, c2)
 	}
 	return exp, nil
 }

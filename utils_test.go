@@ -1,12 +1,13 @@
 package sim2dcodec
 
 import (
+	"math/big"
 	"testing"
 )
 
 func TestSymmetricModulo(t *testing.T) {
 	// Input values: number (n), radix (r), expected modulo (em).
-	n := int64(-44979)
+	n := big.NewRat(-44979, 1)
 	r := int64(1)
 	// Calculates the symmetric modulo.
 	m, err := symmetricModulo(n, r)
@@ -15,7 +16,7 @@ func TestSymmetricModulo(t *testing.T) {
 	}
 	// Check expected symmetric modulo.
 	em := 0
-	if m != 0 {
+	if m.Cmp(big.NewInt(0)) == -1 || m.Cmp(big.NewInt(0)) == 1 {
 		t.Errorf("expected %d but got %d", em, m)
 	}
 	// Value for radix = 0 should trigger an error.
@@ -23,7 +24,6 @@ func TestSymmetricModulo(t *testing.T) {
 	// Calculates the symmetric modulo.
 	// Checks if function throws an error.
 	m, err = symmetricModulo(n, r)
-	// fmt.Printf("m = %d, err = %s", m, err.Error())
 	if err == nil {
 		t.Error("radix 0 should throw an error")
 	}
@@ -31,10 +31,8 @@ func TestSymmetricModulo(t *testing.T) {
 
 func TestExpansion(t *testing.T) {
 	// Input values: number (n), radix (r).
-	n := int64(-44979)
-	r := 7
-	p := -4
-	q := 1
+	n := big.NewRat(-44979, 1)
+	r, p, q := 7, -4, 1
 	pl := polynomialLength(q, p)
 	// Calculate expansion.
 	e, err := expansion(pl, r, n)

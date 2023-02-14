@@ -1,6 +1,7 @@
 package sim2dcodec
 
 import (
+	"math"
 	"math/big"
 )
 
@@ -9,7 +10,12 @@ func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
 	// Length of the polynomial.
 	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.
-	n := fraction.Num().Int64()
+	bp := math.Pow(float64(b), float64(-p))
+	db := big.NewRat(int64(bp), 1)
+	n := fraction.Mul(fraction, db)
+
+	// fmt.Printf("\nFraction: %s, numerator: %d\n", fraction.String(), n)
+
 	// Calculate expansion.
 	e, err := expansion(pl, b, n)
 	if err != nil {
