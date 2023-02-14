@@ -18,6 +18,18 @@ func TestDecode(t *testing.T) {
 	if strings.Compare(f.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", f.String(), rf.String())
 	}
+	// Case for when the fraction is still reducible and can cause errors.
+	// The reduced form of 1460326978/1331 is 12068818/11.
+	f = big.NewRat(1460326978, 1331)
+	b, p, q, d = 11, -3, 6, 16
+	c, err = Encode(f, b, p, q, d)
+	if err != nil {
+		t.Error(err)
+	}
+	rf = Decode(c, b, p, q)
+	if strings.Compare(f.String(), rf.String()) != 0 {
+		t.Errorf("error decoding, expected %s but got %s", f.String(), rf.String())
+	}
 }
 
 func TestEvaluationPowers(t *testing.T) {
