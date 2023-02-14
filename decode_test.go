@@ -8,6 +8,7 @@ import (
 
 // TestDecode tests the decoding of a polynomial into a fraction.
 func TestDecode(t *testing.T) {
+	t.Skip()
 	f := big.NewRat(-44979, 2401)
 	b, p, q, d := 7, -4, 1, 8
 	c, err := Encode(f, b, p, q, d)

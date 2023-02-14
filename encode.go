@@ -14,7 +14,7 @@ func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
 	db := big.NewRat(int64(bp), 1)
 	n := fraction.Mul(fraction, db)
 
-	// fmt.Printf("\nFraction: %s, numerator: %d\n", fraction.String(), n)
+	// fmt.Printf("\nFraction: %s, numerator: %s\n", fraction.String(), n.String())
 
 	// Calculate expansion.
 	e, err := expansion(pl, b, n)

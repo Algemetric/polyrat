@@ -1,7 +1,6 @@
 package sim2dcodec
 
 import (
-	"fmt"
 	"math"
 	"math/big"
 )
@@ -15,7 +14,7 @@ func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
 	// Modulo: numerator % radix.
 	remainder := big.NewInt(0)
 	remainder.Mod(n.Num(), radix)
-	fmt.Printf("\n%s mod %s = %s\n", n.Num().String(), radix.String(), remainder.String())
+	// fmt.Printf("\n%s mod %s = %s\n", n.Num().String(), radix.String(), remainder.String())
 	// Big int addition.
 	// modulo := remainder + radix
 	modulo := big.NewInt(0)
@@ -24,7 +23,7 @@ func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
 	// Half radix.
 	// halfRadix := -radix / 2.0
 	halfRadix := big.NewRat(-radix.Int64(), 2)
-	fmt.Printf("\nmodulo = %s, halfRadix = %s\n", modulo.String(), halfRadix.String())
+	// fmt.Printf("\nmodulo = %s, halfRadix = %s\n", modulo.String(), halfRadix.String())
 
 	// remainder <= 0 && halfRadix < remainder.
 	// To execute "<=0" we need to do "<0" and "==0" separately.
@@ -65,7 +64,7 @@ func expansion(polyLength, base int, numerator *big.Rat) ([]float64, error) {
 		c := big.NewRat(fo.Int64(), int64(nb))
 
 		c2, _ := c.Float64()
-		fmt.Printf("\nc = %s", c.String())
+		// fmt.Printf("\nc (exact=%t)= %s", exact, c.String())
 		exp = append(exp, c2)
 	}
 	return exp, nil
