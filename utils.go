@@ -10,26 +10,18 @@ func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
 	if r == 0 {
 		return nil, ErrInvalidRadix
 	}
+	// Radix big integer.
 	radix := big.NewInt(r)
-	// Modulo: numerator % radix.
-	remainder := big.NewInt(0)
-	remainder.Mod(n.Num(), radix)
-	// fmt.Printf("\n%s mod %s = %s\n", n.Num().String(), radix.String(), remainder.String())
-	// Big int addition.
-	// modulo := remainder + radix
+	// Modulo = numerator % radix.
 	modulo := big.NewInt(0)
-	modulo.Add(modulo, remainder)
-	modulo.Add(modulo, radix)
+	modulo.Mod(n.Num(), radix)
 	// Half radix.
-	// halfRadix := -radix / 2.0
-	halfRadix := big.NewRat(-radix.Int64(), 2)
-	// fmt.Printf("\nmodulo = %s, halfRadix = %s\n", modulo.String(), halfRadix.String())
-
+	// halfRadix = radix / 2.0
+	halfRadix := big.NewRat(radix.Int64(), 2)
 	// remainder <= 0 && halfRadix < remainder.
 	// To execute "<=0" we need to do "<0" and "==0" separately.
-	zero := big.NewInt(0)
-	remainderFraction := big.NewRat(remainder.Int64(), 1)
-	if (remainder.Cmp(zero) == -1 || remainder.Cmp(zero) == 0) && (halfRadix.Cmp(remainderFraction) == -1) {
+	remainderFraction := big.NewRat(modulo.Int64(), 1)
+	if zero := big.NewInt(0); (modulo.Cmp(zero) == -1 || modulo.Cmp(zero) == 0) && (halfRadix.Cmp(remainderFraction) == -1) {
 		modulo.Sub(modulo, radix)
 	}
 

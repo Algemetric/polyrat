@@ -7,7 +7,7 @@ import (
 
 func TestSymmetricModulo(t *testing.T) {
 	// Input values: number (n), radix (r), expected modulo (em).
-	n := big.NewRat(-44979, 1)
+	n := big.NewRat(-44979, 2401)
 	r := int64(1)
 	// Calculates the symmetric modulo.
 	m, err := symmetricModulo(n, r)
@@ -15,8 +15,8 @@ func TestSymmetricModulo(t *testing.T) {
 		t.Error(err)
 	}
 	// Check expected symmetric modulo.
-	em := 0
-	if m.Cmp(big.NewInt(0)) == -1 || m.Cmp(big.NewInt(0)) == 1 {
+	em := int64(0)
+	if m.Cmp(big.NewInt(em)) == -1 || m.Cmp(big.NewInt(em)) == 1 {
 		t.Errorf("expected %d but got %d", em, m)
 	}
 	// Value for radix = 0 should trigger an error.
@@ -26,6 +26,20 @@ func TestSymmetricModulo(t *testing.T) {
 	m, err = symmetricModulo(n, r)
 	if err == nil {
 		t.Error("radix 0 should throw an error")
+	}
+
+	// Input values: number (n), radix (r), expected modulo (em).
+	n = big.NewRat(-44979, 2401)
+	r = int64(7)
+	// Calculates the symmetric modulo.
+	m, err = symmetricModulo(n, r)
+	if err != nil {
+		t.Error(err)
+	}
+	// Check expected symmetric modulo.
+	em = int64(3)
+	if m.Cmp(big.NewInt(em)) == -1 || m.Cmp(big.NewInt(em)) == 1 {
+		t.Errorf("expected %d but got %d", em, m)
 	}
 }
 
