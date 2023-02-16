@@ -9,7 +9,7 @@ func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
 	// Length of the polynomial.
 	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.
-	n := fraction.Num().Int64()
+	n := isolateNumerator(fraction, b, p)
 	// Calculate expansion.
 	e, err := expansion(pl, b, n)
 	if err != nil {
