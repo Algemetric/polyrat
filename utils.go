@@ -157,6 +157,13 @@ func validateFraction(f *big.Rat, b, p, q int) error {
 }
 
 func validateNumerator(f *big.Rat, b, p, q int) error {
+	// (equation 1) eq1 = b - 1 / 2
+	// (equation 2) eq2 = b^(q - p + 1) / b - 1
+	// (round up) ru = ceil(eq1)
+	// (round down) rd = floor(eq1)
+	// (Lower bound) lb = -1 * ru * eq2
+	// (Upper bound) ub = rd * eq2
+	// Check if lb <= numerator <= ub
 	return nil
 }
 
