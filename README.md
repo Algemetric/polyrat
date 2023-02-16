@@ -1,2 +1,2 @@
-# sim2dcodec
-Single Instruction Much More Data Codec
+# sim2d
+Single Instruction Much More Data Codec.

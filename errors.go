@@ -1,4 +1,4 @@
-package sim2dcodec
+package sim2d
 
 import "errors"
 
