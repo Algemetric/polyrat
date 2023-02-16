@@ -142,7 +142,36 @@ func validateDegree(p, q, d int) error {
 	return nil
 }
 
-func validateParameters(b, p, q, d int) error {
+func validateFraction(f *big.Rat, b, p, q int) error {
+	// Validate numerator.
+	err := validateNumerator(f, b, p, q)
+	if err != nil {
+		return err
+	}
+	// Validate denominator.
+	err = validateDenominator(f, b, p)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateNumerator(f *big.Rat, b, p, q int) error {
+	return nil
+}
+
+func validateDenominator(f *big.Rat, b, p int) error {
+	d := f.Denom()
+	absP := math.Abs(float64(p))
+	bPowP := math.Pow(float64(b), absP)
+	// denominator == b^(|p|)
+	if d.Cmp(big.NewInt(int64(bPowP))) != 0 {
+		return ErrDenominatorIsEqualToBToThePowerOfP
+	}
+	return nil
+}
+
+func validateParameters(f *big.Rat, b, p, q, d int) error {
 	var err error
 	// Validate modulo b.
 	err = validateModulo(b)
@@ -164,5 +193,9 @@ func validateParameters(b, p, q, d int) error {
 		return err
 	}
 	// Validate fraction.
+	err = validateFraction(f, b, p, q)
+	if err != nil {
+		return err
+	}
 	return nil
 }

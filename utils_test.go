@@ -137,10 +137,26 @@ func TestValidateDegree(t *testing.T) {
 	}
 }
 
+func TestValidateDenominator(t *testing.T) {
+	// Input values: fraction number (n), radix (r), expected modulo (em).
+	f := big.NewRat(-44979, 2401)
+	b, p := 1, 8
+	err := validateDenominator(f, b, p)
+	if err == nil {
+		t.Error("an error should be thrown when the denominator is not the base to the power of the absolute value of p")
+	} else {
+		if err.Error() != ErrDenominatorIsEqualToBToThePowerOfP.Error() {
+			t.Error(ErrDenominatorIsEqualToBToThePowerOfP.Error())
+		}
+	}
+}
+
 func TestValidateParameters(t *testing.T) {
+	// Valid fraction.
+	f := big.NewRat(-44979, 2401)
 	// Valid parameters.
 	b, p, q, d := 7, -4, 1, 8
-	err := validateParameters(b, p, q, d)
+	err := validateParameters(f, b, p, q, d)
 	if err != nil {
 		t.Error("parameters should be valid")
 	}
