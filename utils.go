@@ -6,10 +6,6 @@ import (
 )
 
 func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
-	// Check initial radix (base) value.
-	if r == 0 {
-		return nil, ErrInvalidRadix
-	}
 	// Radix big integer.
 	radix := big.NewInt(r)
 	// Modulo = numerator % radix.

@@ -34,16 +34,6 @@ func TestSymmetricModulo(t *testing.T) {
 			t.Errorf("expected %s but got %s", esm[i].String(), m.String())
 		}
 	}
-
-	// Input values: number (n), radix (r), expected modulo (em).
-	n = big.NewRat(-44979, 2401)
-	// Value for radix = 0 should trigger an error.
-	// Checks if function throws an error.
-	_, err := symmetricModulo(n, 0)
-	if err == nil {
-		t.Error("radix 0 should throw an error")
-	}
-
 }
 
 func TestExpansion(t *testing.T) {

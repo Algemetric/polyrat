@@ -3,7 +3,6 @@ package sim2d
 import "errors"
 
 var (
-	ErrInvalidRadix                = errors.New("invalid radix value")
 	ErrDIsLessThanOrEqualToQPlusP  = errors.New("degree should be greater than q plus the absolute value of p")
 	ErrDIsLessThanOne              = errors.New("degree should be greater than or equal to 1")
 	ErrDIsNotAPowerOf2             = errors.New("degree should be a power of 2")
