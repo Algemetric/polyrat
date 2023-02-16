@@ -93,3 +93,80 @@ func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
 	}
 	return dp
 }
+
+func validateModulo(b int) error {
+	// b >= 2.
+	if b < 2 {
+		return ErrBIsLessThan2
+	}
+	return nil
+}
+
+func validateSmallestPowerOfExpansion(p, q int) error {
+	// p < q.
+	if p >= q {
+		return ErrPIsLessThanQ
+	}
+	// p < 0.
+	if p >= 0 {
+		return ErrPIsGreaterThanOrEqualToZero
+	}
+	return nil
+}
+
+func validateGreatestPowerOfExpansion(q int) error {
+	// q > 0.
+	if q <= 0 {
+		return ErrQIsLessThanOrEqualToZero
+	}
+	return nil
+}
+
+func validateDegree(p, q, d int) error {
+	// d >= 1.
+	if d < 1 {
+		return ErrDIsLessThanOne
+	}
+	// d is a power of 2.
+	// Log base 2 of d.
+	floatD := float64(d)
+	logD := math.Log2(floatD)
+	// Integer part of log base 2 of d.
+	intLog := math.Round(logD)
+	// Recalculated d.
+	d2 := math.Pow(2.0, intLog)
+	if floatD != d2 {
+		return ErrDIsNotAPowerOf2
+	}
+	// d > q + |p|.
+	absP := math.Abs(float64(p))
+	if d <= (q + int(absP)) {
+		return ErrDIsLessThanOrEqualToQPlusP
+	}
+	return nil
+}
+
+func validateParameters(b, p, q, d int) error {
+	var err error
+	// Validate modulo b.
+	err = validateModulo(b)
+	if err != nil {
+		return err
+	}
+	// Validade smallest power of expansion.
+	err = validateSmallestPowerOfExpansion(p, q)
+	if err != nil {
+		return err
+	}
+	err = validateGreatestPowerOfExpansion(q)
+	if err != nil {
+		return err
+	}
+	// Validate degree.
+	err = validateDegree(p, q, d)
+	if err != nil {
+		return err
+	}
+	// Validate fraction.
+	return nil
+}
