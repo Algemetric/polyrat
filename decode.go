@@ -8,7 +8,6 @@ import (
 func Decode(code []int64, b, p, q int) *big.Rat {
 	// Code length.
 	l := len(code)
-	// decode = vector([ -1 * input[l+p+i] for i in range(-p) ] + input[:q+1])
 	var original []int64
 	for i := 0; i < -p; i++ {
 		o := -1 * code[l+p+i]
@@ -31,7 +30,6 @@ func evaluationPowers(b, q, p int) []*big.Rat {
 	for i := 0; i < pl; i++ {
 		// Fraction.
 		f := big.NewRat(1, 1)
-
 		pPlusI := int64(p + i)
 		base := big.NewInt(int64(b))
 		if pPlusI < 0 {
