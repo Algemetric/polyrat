@@ -148,3 +148,40 @@ func validateEncodingParameters(f *big.Rat, b, p, q, d int) error {
 	}
 	return nil
 }
+
+func validateDegreeOfCode(code []int64) error {
+	// Degree of code.
+	d := len(code)
+	// Check if d is a power of 2.
+	// Log base 2 of d.
+	floatD := float64(d)
+	logD := math.Log2(floatD)
+	// Integer part of log base 2 of d.
+	intLog := math.Round(logD)
+	// Recalculated d.
+	d2 := math.Pow(2.0, intLog)
+	if floatD != d2 {
+		return ErrCodeDegreeIsNotAPowerOf2
+	}
+	return nil
+}
+
+func validateDecodingParameters(f *big.Rat, b, p, q, d int) error {
+	var err error
+	// Validate modulo b.
+	err = validateModulo(b)
+	if err != nil {
+		return err
+	}
+	// Validade smallest power of expansion.
+	err = validateSmallestPowerOfExpansion(p, q)
+	if err != nil {
+		return err
+	}
+	err = validateGreatestPowerOfExpansion(q)
+	if err != nil {
+		return err
+	}
+	// Validate if degree of code is a power of 2.
+	return nil
+}

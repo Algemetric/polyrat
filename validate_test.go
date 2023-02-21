@@ -125,3 +125,17 @@ func TestValidateEncodingParameters(t *testing.T) {
 		t.Error("parameters should be valid")
 	}
 }
+
+func TestValidateDegreeOfCode(t *testing.T) {
+	// Input code.
+	c := []int64{2, -3, 0, 0, -3, 0, 1}
+	// Decoded fraction.
+	err := validateDegreeOfCode(c)
+	if err == nil {
+		t.Error("an error should be thrown when the degree of the code is not a power of 2")
+	} else {
+		if err.Error() != ErrCodeDegreeIsNotAPowerOf2.Error() {
+			t.Error(ErrCodeDegreeIsNotAPowerOf2.Error())
+		}
+	}
+}
