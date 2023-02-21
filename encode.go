@@ -1,16 +1,17 @@
 package sim2d
 
-import (
-	"math/big"
-)
+import "math/big"
 
 // Encode encodes a fraction into a polynomial.
-func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
-	// // Input validation.
-	// err := validateEncodingParameters(fraction, b, p, q, d)
-	// if err != nil {
-	// 	return nil, err
-	// }
+func Encode(num, den *big.Int, b, p, q, d int) ([]int64, error) {
+	// Input validation.
+	err := validateEncodingParameters(num, den, b, p, q, d)
+	if err != nil {
+		return nil, err
+	}
+	// Generate fraction.
+	fraction := big.NewRat(1, 1)
+	fraction.SetFrac(num, den)
 	// Length of the polynomial.
 	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.

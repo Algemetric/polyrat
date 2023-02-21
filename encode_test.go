@@ -7,10 +7,11 @@ import (
 
 // TestEncode tests the encoding of a fractional number into a polynomial.
 func TestEncode(t *testing.T) {
-	f := big.NewRat(-44979, 2401)
+	num := big.NewInt(-44979)
+	den := big.NewInt(2401)
 	b, p, q, d := 7, -4, 1, 8
 	// Calculate code.
-	c, err := Encode(f, b, p, q, d)
+	c, err := Encode(num, den, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -25,9 +26,10 @@ func TestEncode(t *testing.T) {
 
 	// Case for when the fraction is reducible and can cause errors.
 	// The reduced form of 1460326978/1331 is 12068818/11.
-	f = big.NewRat(1460326978, 1331)
+	num = big.NewInt(1460326978)
+	den = big.NewInt(1331)
 	b, p, q, d = 11, -3, 6, 16
-	c, err = Encode(f, b, p, q, d)
+	c, err = Encode(num, den, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -42,9 +44,10 @@ func TestEncode(t *testing.T) {
 
 	// Case for a larger fraction.
 	// 23403339412867/10000 results in [1, 4, -1, 4, 3, 3, 0, 4, 3, 2, 0, 0, 3, 3, 1, -3].
-	f = big.NewRat(23403339412867, 10000)
+	num = big.NewInt(23403339412867)
+	den = big.NewInt(10000)
 	b, p, q, d = 10, -4, 10, 16
-	c, err = Encode(f, b, p, q, d)
+	c, err = Encode(num, den, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}

@@ -57,49 +57,57 @@ func validateDegree(p, q, d int) error {
 	return nil
 }
 
-func validateFraction(f *big.Rat, b, p, q int) error {
+func validateFraction(num, den *big.Int, b, p, q int) error {
 	// Validate numerator.
-	err := validateNumerator(f, b, p, q)
+	err := validateNumerator(num, b, p, q)
 	if err != nil {
 		return err
 	}
 	// Validate denominator.
-	err = validateDenominator(f, b, p)
+	err = validateDenominator(den, b, p)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func validateNumerator(f *big.Rat, b, p, q int) error {
-	// Variable conversion.
-	bFloat := float64(b)
+func validateNumerator(n *big.Int, b, p, q int) error {
+	num1 := big.NewRat(1, 1)
+	num1.SetInt(n)
 	// (equation 1) eq1 = b - 1 / 2
-	eq1 := (bFloat - 1.0) / 2.0
+	eq1 := big.NewRat(int64(b-1), 2)
 	// (equation 2) eq2 = b^(q - p + 1) / b - 1
-	e := float64(q-p) + 1.0
-	eq2 := math.Pow(bFloat, e) / (bFloat - 1.0)
+	e := big.NewInt(int64(q - p + 1))
+	num := big.NewInt(int64(b))
+	num.Exp(num, e, nil)
+	den := big.NewInt(int64(b - 1))
+	eq2 := big.NewRat(1, 1)
+	eq2.SetFrac(num, den)
 	// (round up) ru = ceil(eq1)
-	ru := math.Ceil(eq1)
+	// ru := math.Ceil(eq1)
+
 	// (round down) rd = floor(eq1)
-	rd := math.Floor(eq2)
+	// rd := math.Floor(eq2)
+
 	// (Lower bound) lb = -1 * ru * eq2
-	lb := int64(-ru * eq2)
+	lb := big.NewRat(-1, 1)
+	lb.Mul(lb, eq1)
+	lb.Mul(lb, eq2)
 	// (Upper bound) ub = rd * eq2
-	ub := int64(rd * eq2)
+	ub := big.NewRat(1, 1)
+	ub.Mul(ub, eq1)
+	ub.Mul(ub, eq2)
 	// Check if numerator is (lb <= numerator <= ub).
 	// Therefore, we can check if numerator is (numerator < lb or ub < numerator).
-	n := f.Num()
-	numeratorIsLessThanLowerBound := n.Cmp(big.NewInt(lb)) == -1
-	numeratorIsGreaterThanUpperBound := n.Cmp(big.NewInt(ub)) == 1
+	numeratorIsLessThanLowerBound := num1.Cmp(lb) == -1
+	numeratorIsGreaterThanUpperBound := num1.Cmp(ub) == 1
 	if numeratorIsLessThanLowerBound || numeratorIsGreaterThanUpperBound {
 		return ErrNumeratorIsNotInTheMessageSpaceRange
 	}
 	return nil
 }
 
-func validateDenominator(f *big.Rat, b, p int) error {
-	d := f.Denom()
+func validateDenominator(d *big.Int, b, p int) error {
 	absP := math.Abs(float64(p))
 	bPowP := big.NewInt(int64(math.Pow(float64(b), absP)))
 	// Original condition: denominator == b^(|p|).
@@ -110,7 +118,11 @@ func validateDenominator(f *big.Rat, b, p int) error {
 	return nil
 }
 
-func validateEncodingParameters(f *big.Rat, b, p, q, d int) error {
+func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
+	// Generate fraction.
+	f := big.NewRat(1, 1)
+	f.SetFrac(num, den)
+	// Error variable.
 	var err error
 	// Validate modulo b.
 	err = validateModulo(b)
@@ -132,17 +144,7 @@ func validateEncodingParameters(f *big.Rat, b, p, q, d int) error {
 		return err
 	}
 	// Validate fraction.
-	err = validateFraction(f, b, p, q)
-	if err != nil {
-		return err
-	}
-	// Validate denominator.
-	err = validateDenominator(f, b, p)
-	if err != nil {
-		return err
-	}
-	// Validate numerator.
-	err = validateNumerator(f, b, p, q)
+	err = validateFraction(num, den, b, p, q)
 	if err != nil {
 		return err
 	}

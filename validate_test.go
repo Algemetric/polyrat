@@ -89,9 +89,9 @@ func TestValidateDegree(t *testing.T) {
 
 func TestValidateDenominator(t *testing.T) {
 	// Input values: fraction number (n), radix (r), expected modulo (em).
-	f := big.NewRat(-44979, 2401)
+	d := big.NewInt(2401)
 	b, p := 1, -8
-	err := validateDenominator(f, b, p)
+	err := validateDenominator(d, b, p)
 	if err == nil {
 		t.Error("an error should be thrown when the denominator is not the base to the power of the absolute value of p")
 	} else {
@@ -103,9 +103,9 @@ func TestValidateDenominator(t *testing.T) {
 
 func TestValidateNumerator(t *testing.T) {
 	// Input values: number (n), radix (r).
-	f := big.NewRat(-58825, 2401)
+	n := big.NewInt(-58825)
 	b, p, q := 7, -4, 1
-	err := validateNumerator(f, b, p, q)
+	err := validateNumerator(n, b, p, q)
 	if err == nil {
 		t.Error("an error should be thrown when the numerator is not in the message space range")
 	} else {
@@ -131,10 +131,11 @@ func TestValidateDegreeOfCode(t *testing.T) {
 
 func TestValidateEncodingParameters(t *testing.T) {
 	// Valid fraction.
-	f := big.NewRat(-44979, 2401)
+	num := big.NewInt(-44979)
+	den := big.NewInt(2401)
 	// Valid parameters.
 	b, p, q, d := 7, -4, 1, 8
-	err := validateEncodingParameters(f, b, p, q, d)
+	err := validateEncodingParameters(num, den, b, p, q, d)
 	if err != nil {
 		t.Error("parameters should be valid for encoding")
 	}
