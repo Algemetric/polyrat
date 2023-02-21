@@ -166,7 +166,7 @@ func validateDegreeOfCode(code []int64) error {
 	return nil
 }
 
-func validateDecodingParameters(f *big.Rat, b, p, q, d int) error {
+func validateDecodingParameters(code []int64, b, p, q int) error {
 	var err error
 	// Validate modulo b.
 	err = validateModulo(b)
@@ -183,5 +183,9 @@ func validateDecodingParameters(f *big.Rat, b, p, q, d int) error {
 		return err
 	}
 	// Validate if degree of code is a power of 2.
+	err = validateDegreeOfCode(code)
+	if err != nil {
+		return err
+	}
 	return nil
 }

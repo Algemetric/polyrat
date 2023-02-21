@@ -115,17 +115,6 @@ func TestValidateNumerator(t *testing.T) {
 	}
 }
 
-func TestValidateEncodingParameters(t *testing.T) {
-	// Valid fraction.
-	f := big.NewRat(-44979, 2401)
-	// Valid parameters.
-	b, p, q, d := 7, -4, 1, 8
-	err := validateEncodingParameters(f, b, p, q, d)
-	if err != nil {
-		t.Error("parameters should be valid")
-	}
-}
-
 func TestValidateDegreeOfCode(t *testing.T) {
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
@@ -137,5 +126,27 @@ func TestValidateDegreeOfCode(t *testing.T) {
 		if err.Error() != ErrCodeDegreeIsNotAPowerOf2.Error() {
 			t.Error(ErrCodeDegreeIsNotAPowerOf2.Error())
 		}
+	}
+}
+
+func TestValidateEncodingParameters(t *testing.T) {
+	// Valid fraction.
+	f := big.NewRat(-44979, 2401)
+	// Valid parameters.
+	b, p, q, d := 7, -4, 1, 8
+	err := validateEncodingParameters(f, b, p, q, d)
+	if err != nil {
+		t.Error("parameters should be valid for encoding")
+	}
+}
+
+func TestValidateDecodingParameters(t *testing.T) {
+	// Parameters.
+	b, p, q := 7, -4, 1
+	// Expected code.
+	c := []int64{2, -3, 0, 0, -3, 0, 1, -2}
+	err := validateDecodingParameters(c, b, p, q)
+	if err != nil {
+		t.Error("parameters should be valid for decoding")
 	}
 }
