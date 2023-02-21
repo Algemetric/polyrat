@@ -6,6 +6,11 @@ import (
 
 // Encode encodes a fraction into a polynomial.
 func Encode(fraction *big.Rat, b, p, q, d int) ([]int64, error) {
+	// // Input validation.
+	// err := validateEncodingParameters(fraction, b, p, q, d)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	// Length of the polynomial.
 	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.

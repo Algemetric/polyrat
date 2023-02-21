@@ -101,9 +101,10 @@ func validateNumerator(f *big.Rat, b, p, q int) error {
 func validateDenominator(f *big.Rat, b, p int) error {
 	d := f.Denom()
 	absP := math.Abs(float64(p))
-	bPowP := math.Pow(float64(b), absP)
-	// if d.Cmp(big.NewInt(int64(bPowP))) == 0 then denominator == b^(|p|).
-	if d.Cmp(big.NewInt(int64(bPowP))) != 0 {
+	bPowP := big.NewInt(int64(math.Pow(float64(b), absP)))
+	// Original condition: denominator == b^(|p|).
+	denominatorIsNotEqualToBToThePowerOfP := d.Cmp(bPowP) != 0
+	if denominatorIsNotEqualToBToThePowerOfP {
 		return ErrDenominatorIsNotEqualToBToThePowerOfP
 	}
 	return nil

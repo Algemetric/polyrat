@@ -90,7 +90,7 @@ func TestValidateDegree(t *testing.T) {
 func TestValidateDenominator(t *testing.T) {
 	// Input values: fraction number (n), radix (r), expected modulo (em).
 	f := big.NewRat(-44979, 2401)
-	b, p := 1, 8
+	b, p := 1, -8
 	err := validateDenominator(f, b, p)
 	if err == nil {
 		t.Error("an error should be thrown when the denominator is not the base to the power of the absolute value of p")
