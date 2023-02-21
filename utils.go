@@ -171,7 +171,7 @@ func validateDenominator(f *big.Rat, b, p int) error {
 	d := f.Denom()
 	absP := math.Abs(float64(p))
 	bPowP := math.Pow(float64(b), absP)
-	// denominator == b^(|p|)
+	// if d.Cmp(big.NewInt(int64(bPowP))) == 0 then denominator == b^(|p|).
 	if d.Cmp(big.NewInt(int64(bPowP))) != 0 {
 		return ErrDenominatorIsEqualToBToThePowerOfP
 	}
@@ -201,6 +201,11 @@ func validateParameters(f *big.Rat, b, p, q, d int) error {
 	}
 	// Validate fraction.
 	err = validateFraction(f, b, p, q)
+	if err != nil {
+		return err
+	}
+	// Validate denominator.
+	err = validateDenominator(f, b, p)
 	if err != nil {
 		return err
 	}
