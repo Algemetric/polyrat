@@ -15,7 +15,10 @@ func TestDecode(t *testing.T) {
 	// Expected code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1, -2}
 	// Decoded fraction.
-	rf := Decode(c, b, p, q)
+	rf, err := Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
 	if strings.Compare(ef.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
 	}
@@ -29,7 +32,10 @@ func TestDecode(t *testing.T) {
 	// Expected code.
 	c = []int64{3, 5, 3, -1, -2, -4, 1, 0, 0, 0, 0, 0, 0, 0, 0, -3}
 	// Decoded fraction.
-	rf = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
 	if strings.Compare(ef.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
 	}
@@ -43,7 +49,10 @@ func TestDecode(t *testing.T) {
 	// Expected code.
 	c = []int64{1, 4, -1, 4, 3, 3, 0, 4, 3, 2, 0, 0, 3, 3, 1, -3}
 	// Decoded fraction.
-	rf = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
 	if strings.Compare(ef.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
 	}

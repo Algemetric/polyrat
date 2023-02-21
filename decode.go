@@ -5,7 +5,12 @@ import (
 )
 
 // Decode decodes a polynomial into its original fraction.
-func Decode(code []int64, b, p, q int) *big.Rat {
+func Decode(code []int64, b, p, q int) (*big.Rat, error) {
+	// Validate input.
+	err := validateDecodingParameters(code, b, p, q)
+	if err != nil {
+		return nil, err
+	}
 	// Code length.
 	l := len(code)
 	var original []int64
@@ -19,7 +24,7 @@ func Decode(code []int64, b, p, q int) *big.Rat {
 	// Decoding powers used for evaluation.
 	ep := evaluationPowers(b, q, p)
 	// Return fraction.
-	return dotProduct(ep, original)
+	return dotProduct(ep, original), nil
 }
 
 func evaluationPowers(b, q, p int) []*big.Rat {
