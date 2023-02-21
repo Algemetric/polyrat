@@ -157,12 +157,12 @@ func validateFraction(f *big.Rat, b, p, q int) error {
 }
 
 func validateNumerator(f *big.Rat, b, p, q int) error {
-	// Variables conversion.
-	bFloat, pFloat, qFloat := float64(b), float64(p), float64(q)
+	// Variable conversion.
+	bFloat := float64(b)
 	// (equation 1) eq1 = b - 1 / 2
 	eq1 := (bFloat - 1.0) / 2.0
 	// (equation 2) eq2 = b^(q - p + 1) / b - 1
-	e := qFloat - pFloat + 1.0
+	e := float64(q-p) + 1.0
 	eq2 := math.Pow(bFloat, e) / (bFloat - 1.0)
 	// (round up) ru = ceil(eq1)
 	ru := math.Ceil(eq1)
@@ -194,7 +194,7 @@ func validateDenominator(f *big.Rat, b, p int) error {
 	return nil
 }
 
-func validateParameters(f *big.Rat, b, p, q, d int) error {
+func validateEncodingParameters(f *big.Rat, b, p, q, d int) error {
 	var err error
 	// Validate modulo b.
 	err = validateModulo(b)

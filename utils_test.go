@@ -165,12 +165,12 @@ func TestValidateNumerator(t *testing.T) {
 	}
 }
 
-func TestValidateParameters(t *testing.T) {
+func TestValidateEncodingParameters(t *testing.T) {
 	// Valid fraction.
 	f := big.NewRat(-44979, 2401)
 	// Valid parameters.
 	b, p, q, d := 7, -4, 1, 8
-	err := validateParameters(f, b, p, q, d)
+	err := validateEncodingParameters(f, b, p, q, d)
 	if err != nil {
 		t.Error("parameters should be valid")
 	}
