@@ -145,8 +145,22 @@ func TestValidateDenominator(t *testing.T) {
 	if err == nil {
 		t.Error("an error should be thrown when the denominator is not the base to the power of the absolute value of p")
 	} else {
-		if err.Error() != ErrDenominatorIsEqualToBToThePowerOfP.Error() {
-			t.Error(ErrDenominatorIsEqualToBToThePowerOfP.Error())
+		if err.Error() != ErrDenominatorIsNotEqualToBToThePowerOfP.Error() {
+			t.Error(ErrDenominatorIsNotEqualToBToThePowerOfP.Error())
+		}
+	}
+}
+
+func TestValidateNumerator(t *testing.T) {
+	// Input values: number (n), radix (r).
+	f := big.NewRat(-58825, 2401)
+	b, p, q := 7, -4, 1
+	err := validateNumerator(f, b, p, q)
+	if err == nil {
+		t.Error("an error should be thrown when the numerator is not in the message space range")
+	} else {
+		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
+			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
 }

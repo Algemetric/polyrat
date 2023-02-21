@@ -157,13 +157,29 @@ func validateFraction(f *big.Rat, b, p, q int) error {
 }
 
 func validateNumerator(f *big.Rat, b, p, q int) error {
+	// Variables conversion.
+	bFloat, pFloat, qFloat := float64(b), float64(p), float64(q)
 	// (equation 1) eq1 = b - 1 / 2
+	eq1 := (bFloat - 1.0) / 2.0
 	// (equation 2) eq2 = b^(q - p + 1) / b - 1
+	e := qFloat - pFloat + 1.0
+	eq2 := math.Pow(bFloat, e) / (bFloat - 1.0)
 	// (round up) ru = ceil(eq1)
+	ru := math.Ceil(eq1)
 	// (round down) rd = floor(eq1)
+	rd := math.Floor(eq2)
 	// (Lower bound) lb = -1 * ru * eq2
+	lb := int64(-ru * eq2)
 	// (Upper bound) ub = rd * eq2
-	// Check if lb <= numerator <= ub
+	ub := int64(rd * eq2)
+	// Check if numerator is (lb <= numerator <= ub).
+	// Therefore, we can check if numerator is (numerator < lb or ub < numerator).
+	n := f.Num()
+	numeratorIsLessThanLowerBound := n.Cmp(big.NewInt(lb)) == -1
+	numeratorIsGreaterThanUpperBound := n.Cmp(big.NewInt(ub)) == 1
+	if numeratorIsLessThanLowerBound || numeratorIsGreaterThanUpperBound {
+		return ErrNumeratorIsNotInTheMessageSpaceRange
+	}
 	return nil
 }
 
@@ -173,7 +189,7 @@ func validateDenominator(f *big.Rat, b, p int) error {
 	bPowP := math.Pow(float64(b), absP)
 	// if d.Cmp(big.NewInt(int64(bPowP))) == 0 then denominator == b^(|p|).
 	if d.Cmp(big.NewInt(int64(bPowP))) != 0 {
-		return ErrDenominatorIsEqualToBToThePowerOfP
+		return ErrDenominatorIsNotEqualToBToThePowerOfP
 	}
 	return nil
 }
@@ -206,6 +222,11 @@ func validateParameters(f *big.Rat, b, p, q, d int) error {
 	}
 	// Validate denominator.
 	err = validateDenominator(f, b, p)
+	if err != nil {
+		return err
+	}
+	// Validate numerator.
+	err = validateNumerator(f, b, p, q)
 	if err != nil {
 		return err
 	}
