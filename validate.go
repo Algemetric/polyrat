@@ -112,8 +112,35 @@ func validateNumerator(n *big.Int, b, p, q int) error {
 		}
 	} else {
 		// Odd:
-		// Lower bound: (1 - b^(q-p+1)) / 2 x (b-1)
-		// Upper bound: (b^(q-p+1) - 1) / 2 x (b-1)
+		// First operand: 1/2. Later we can just multiply the numerator by -1 to achieve the upper bound.
+		fo := big.NewRat(1, 2)
+		// Second operand: (b^(q-p+1) - 1) / 1.
+		so := big.NewRat(1, 1)
+		so.SetFrac(a, so.Denom())
+
+		// Lower bound: -1/2 x (b^(q-p+1)/1).
+		lb := big.NewRat(-1, 1)
+		// -1/2.
+		lb.Mul(lb, fo)
+		// -1/2 x (b^(q-p+1)/1).
+		lb.Mul(lb, so)
+
+		// Upper bound: 1/2 x (b^(q-p+1)/1).
+		ub := big.NewRat(1, 1)
+		// 1/2.
+		ub.Mul(ub, fo)
+		// 1/2 x (b^(q-p+1)/1).
+		ub.Mul(ub, so)
+
+		// Check if numerator is (lb <= numerator <= ub).
+		// Therefore, we can check if numerator is (numerator < lb or ub < numerator).
+		nf := big.NewRat(1, 1)
+		nf.SetInt(n)
+		numeratorIsLessThanLowerBound := nf.Cmp(lb) == -1
+		numeratorIsGreaterThanUpperBound := nf.Cmp(ub) == 1
+		if numeratorIsLessThanLowerBound || numeratorIsGreaterThanUpperBound {
+			return ErrNumeratorIsNotInTheMessageSpaceRange
+		}
 	}
 	return nil
 }

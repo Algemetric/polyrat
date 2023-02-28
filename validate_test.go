@@ -121,9 +121,41 @@ func TestValidateNumerator(t *testing.T) {
 			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
-	// b = ?, q = ?, p = ?.
+	// b = 7, q = 3, p = -2.
 	// b is ODD.
-	// Check numerators for when b is odd.
+	b, q, p = 7, 3, -2
+	// Check that numerator -58830 is not in the message space [,].
+	n.SetInt64(-58830)
+	err = validateNumerator(n, b, p, q)
+	if err == nil {
+		t.Error("an error should be thrown because the numerator is not in the message space range")
+	} else {
+		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
+			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
+		}
+	}
+	// Check that numerator -58823 is in the message space [,].
+	n.SetInt64(-58823)
+	err = validateNumerator(n, b, p, q)
+	if err != nil {
+		t.Error("an error should not be thrown because the numerator is in the message space range")
+	}
+	// Check that numerator 58832 is not in the message space [,].
+	n.SetInt64(58832)
+	err = validateNumerator(n, b, p, q)
+	if err == nil {
+		t.Error("an error should be thrown because the numerator is not in the message space range")
+	} else {
+		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
+			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
+		}
+	}
+	// Check that numerator 58773 is in the message space [,].
+	n.SetInt64(58773)
+	err = validateNumerator(n, b, p, q)
+	if err != nil {
+		t.Error("an error should not be thrown because the numerator is in the message space range")
+	}
 }
 
 func TestValidateDegreeOfCode(t *testing.T) {
