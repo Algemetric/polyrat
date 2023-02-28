@@ -102,17 +102,28 @@ func TestValidateDenominator(t *testing.T) {
 }
 
 func TestValidateNumerator(t *testing.T) {
-	// Input values: number (n), radix (r).
-	n := big.NewInt(-58825)
-	b, p, q := 7, -4, 1
+	// b = 10, q = 3, p = -2.
+	// b is EVEN.
+	b, q, p := 10, 3, -2
+	// Check that numerator -523187 is in the message space [-555555, 444444].
+	n := big.NewInt(-523187)
 	err := validateNumerator(n, b, p, q)
+	if err != nil {
+		t.Error("an error should not be thrown because the numerator is in the message space range")
+	}
+	// Check that numerator 455192 is NOT in the message space [-555555, 444444].
+	n.SetInt64(455192)
+	err = validateNumerator(n, b, p, q)
 	if err == nil {
-		t.Error("an error should be thrown when the numerator is not in the message space range")
+		t.Error("an error should be thrown because the numerator is not in the message space range")
 	} else {
 		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
 			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
+	// b = ?, q = ?, p = ?.
+	// b is ODD.
+	// Check numerators for when b is odd.
 }
 
 func TestValidateDegreeOfCode(t *testing.T) {

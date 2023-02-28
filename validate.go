@@ -72,37 +72,48 @@ func validateFraction(num, den *big.Int, b, p, q int) error {
 }
 
 func validateNumerator(n *big.Int, b, p, q int) error {
-	num1 := big.NewRat(1, 1)
-	num1.SetInt(n)
-	// (equation 1) eq1 = b - 1 / 2
-	eq1 := big.NewRat(int64(b-1), 2)
-	// (equation 2) eq2 = b^(q - p + 1) / b - 1
+	// Components for equations.
+	// a = b^(q-p+1) - 1.
 	e := big.NewInt(int64(q - p + 1))
-	num := big.NewInt(int64(b))
-	num.Exp(num, e, nil)
-	den := big.NewInt(int64(b - 1))
-	eq2 := big.NewRat(1, 1)
-	eq2.SetFrac(num, den)
-	// (round up) ru = ceil(eq1)
-	// ru := math.Ceil(eq1)
+	a := big.NewInt(int64(b))
+	a.Exp(a, e, nil)
+	a.Sub(a, big.NewInt(1))
+	// Check parity (if b is even or odd).
+	if b%2 == 0 {
+		// Even:
+		// First operand: b/2. Later we can just multiply by -1 or subtract by -1 to achieve the lower and upper bound.
+		fo := big.NewRat(int64(b), 2)
+		// Second operand: ((b^(q-p+1) - 1) / (b-1)).
+		so := big.NewRat(1, int64(b)-1)
+		so.SetFrac(a, so.Denom())
 
-	// (round down) rd = floor(eq1)
-	// rd := math.Floor(eq2)
+		// Lower bound is -b/2 x (b^(q-p+1) - 1) / (b-1).
+		lb := big.NewRat(-1, 1)
+		// -b/2.
+		lb.Mul(lb, fo)
+		// -b/2 x (b^(q-p+1) - 1) / (b-1).
+		lb.Mul(lb, so)
 
-	// (Lower bound) lb = -1 * ru * eq2
-	lb := big.NewRat(-1, 1)
-	lb.Mul(lb, eq1)
-	lb.Mul(lb, eq2)
-	// (Upper bound) ub = rd * eq2
-	ub := big.NewRat(1, 1)
-	ub.Mul(ub, eq1)
-	ub.Mul(ub, eq2)
-	// Check if numerator is (lb <= numerator <= ub).
-	// Therefore, we can check if numerator is (numerator < lb or ub < numerator).
-	numeratorIsLessThanLowerBound := num1.Cmp(lb) == -1
-	numeratorIsGreaterThanUpperBound := num1.Cmp(ub) == 1
-	if numeratorIsLessThanLowerBound || numeratorIsGreaterThanUpperBound {
-		return ErrNumeratorIsNotInTheMessageSpaceRange
+		// Upper bound: (b/2 - 1/1) x ((b^(q-p+1) - 1) / 1)
+		// b/2 - 1/1 = (b-2)/2.
+		ub := big.NewRat(int64(b-2), 2)
+		// (b-2)/2 x ((b^(q-p+1) - 1) / 1).
+		so.SetFrac(so.Num(), big.NewInt(1))
+		ub.Mul(ub, so)
+
+		// Check if numerator is (lb <= numerator <= ub).
+		// Therefore, we can check if numerator is (numerator < lb or ub < numerator).
+		nf := big.NewRat(1, 1)
+		nf.SetInt(n)
+		numeratorIsLessThanLowerBound := nf.Cmp(lb) == -1
+		numeratorIsGreaterThanUpperBound := nf.Cmp(ub) == 1
+		if numeratorIsLessThanLowerBound || numeratorIsGreaterThanUpperBound {
+			return ErrNumeratorIsNotInTheMessageSpaceRange
+		}
+	} else {
+		// Odd:
+		// Lower bound: (1 - b^(q-p+1)) / 2 x (b-1)
+		// Upper bound: (b^(q-p+1) - 1) / 2 x (b-1)
 	}
 	return nil
 }
