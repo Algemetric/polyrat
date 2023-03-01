@@ -44,10 +44,8 @@ func expansion(polyLength, base int, numerator *big.Rat) ([]float64, error) {
 	// Base as a float 64 bits.
 	b := float64(base)
 	for i := 0; i < polyLength; i++ {
-		// Exponent.
-		e := float64(i)
 		// Second operand.
-		nb := math.Pow(b, e)
+		nb := math.Pow(b, float64(i))
 		so, err := symmetricModulo(numerator, int64(nb))
 		if err != nil {
 			return nil, err
