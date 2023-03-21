@@ -56,6 +56,36 @@ func TestDecode(t *testing.T) {
 	if strings.Compare(ef.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
 	}
+
+	// Case for when the value to be decoded is 10717.02.
+	c = []int64{-2, -8, 8, -10, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 10}
+	// Parameters.
+	b, p, q = 10, -4, 8
+	// Expected fraction.
+	ef = big.NewRat(107170200, 10000)
+	// Decoded fraction.
+	rf, err = Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
+	if strings.Compare(ef.String(), rf.String()) != 0 {
+		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
+	}
+
+	// Case for when the value to be decoded is 67059.2745.
+	c = []int64{5, 5, 0, -3, -3, 1, 0, 0, 0, 0, 0, 0, -5, -14, -26, -40}
+	// Parameters.
+	b, p, q = 10, -4, 8
+	// Expected fraction.
+	ef = big.NewRat(670592745, 10000)
+	// Decoded fraction.
+	rf, err = Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
+	if strings.Compare(ef.String(), rf.String()) != 0 {
+		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
+	}
 }
 
 func TestEvaluationPowers(t *testing.T) {
