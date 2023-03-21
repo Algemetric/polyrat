@@ -1,7 +1,9 @@
 package sim2d
 
 import (
+	"fmt"
 	"math/big"
+	"strings"
 	"testing"
 )
 
@@ -59,4 +61,25 @@ func TestEncode(t *testing.T) {
 			t.Errorf("expected %d at position %d but got %d", ec[i], i, c[i])
 		}
 	}
+
+	// Case for when the value to be encoded is 67059.2745.
+	num = big.NewInt(670592745)
+	den = big.NewInt(10000)
+	// Parameters.
+	b, p, q, d = 10, -4, 8, 16
+	c, err = Encode(num, den, b, p, q, d)
+	if err != nil {
+		t.Error(err)
+	}
+	// Expected fraction.
+	ef := big.NewRat(670592745, 10000)
+	// Decoded fraction.
+	rf, err := Decode(c, b, p, q)
+	if err != nil {
+		t.Error(err)
+	}
+	if strings.Compare(ef.String(), rf.String()) != 0 {
+		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
+	}
+	fmt.Printf("\nFraction = %s\n", rf.String())
 }
