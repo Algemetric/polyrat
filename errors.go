@@ -18,5 +18,6 @@ var (
 	ErrDenominatorIsNotEqualToBToThePowerOfP = errors.New("denominator should be the base to the power of the absolute value of the lower power")
 	ErrNumeratorIsNotInTheMessageSpaceRange  = errors.New("numerator should be inside the message space range")
 	ErrCodeDegreeIsNotAPowerOf2              = errors.New("code degree should be a power of 2")
+	ErrCodeDegreeIsDifferentFromDegree       = errors.New("code degree is different from the acceptable degree")
 	ErrDenominatorIsZero                     = errors.New("denominator cannot be zero")
 )

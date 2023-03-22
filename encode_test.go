@@ -73,7 +73,7 @@ func TestEncode(t *testing.T) {
 	// Expected fraction.
 	ef := big.NewRat(670592745, 10000)
 	// Decoded fraction.
-	rf, err := Decode(c, b, p, q)
+	rf, err := Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}

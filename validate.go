@@ -185,7 +185,7 @@ func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 	return nil
 }
 
-func validateDegreeOfCode(code []int64) error {
+func validateDegreeOfCode(code []int64, deg int) error {
 	// Degree of code.
 	d := len(code)
 	// Check if d is a power of 2.
@@ -196,13 +196,18 @@ func validateDegreeOfCode(code []int64) error {
 	intLog := math.Round(logD)
 	// Recalculated d.
 	d2 := math.Pow(2.0, intLog)
+	// Check if code degree is a power of 2.
 	if floatD != d2 {
 		return ErrCodeDegreeIsNotAPowerOf2
+	}
+	// Check if code degree is the same as the given degree.
+	if deg != d {
+		return ErrCodeDegreeIsDifferentFromDegree
 	}
 	return nil
 }
 
-func validateDecodingParameters(code []int64, b, p, q int) error {
+func validateDecodingParameters(code []int64, b, p, q, d int) error {
 	var err error
 	// Validate modulo b.
 	err = validateModulo(b)
@@ -219,7 +224,7 @@ func validateDecodingParameters(code []int64, b, p, q int) error {
 		return err
 	}
 	// Validate if degree of code is a power of 2.
-	err = validateDegreeOfCode(code)
+	err = validateDegreeOfCode(code, d)
 	if err != nil {
 		return err
 	}

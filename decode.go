@@ -5,9 +5,9 @@ import (
 )
 
 // Decode decodes a polynomial into its original fraction.
-func Decode(code []int64, b, p, q int) (*big.Rat, error) {
+func Decode(code []int64, b, p, q, d int) (*big.Rat, error) {
 	// Validate input.
-	err := validateDecodingParameters(code, b, p, q)
+	err := validateDecodingParameters(code, b, p, q, d)
 	if err != nil {
 		return nil, err
 	}

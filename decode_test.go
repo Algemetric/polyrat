@@ -11,11 +11,11 @@ func TestDecode(t *testing.T) {
 	// Expected fraction.
 	ef := big.NewRat(-44979, 2401)
 	// Parameters.
-	b, p, q := 7, -4, 1
+	b, p, q, d := 7, -4, 1, 8
 	// Expected code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1, -2}
 	// Decoded fraction.
-	rf, err := Decode(c, b, p, q)
+	rf, err := Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -28,11 +28,11 @@ func TestDecode(t *testing.T) {
 	// Expected fraction.
 	ef = big.NewRat(1460326978, 1331)
 	// Parameters.
-	b, p, q = 11, -3, 6
+	b, p, q, d = 11, -3, 6, 16
 	// Expected code.
 	c = []int64{3, 5, 3, -1, -2, -4, 1, 0, 0, 0, 0, 0, 0, 0, 0, -3}
 	// Decoded fraction.
-	rf, err = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -45,11 +45,11 @@ func TestDecode(t *testing.T) {
 	// Expected fraction.
 	ef = big.NewRat(23403339412867, 10000)
 	// Parameters.
-	b, p, q = 10, -4, 10
+	b, p, q, d = 10, -4, 10, 16
 	// Expected code.
 	c = []int64{1, 4, -1, 4, 3, 3, 0, 4, 3, 2, 0, 0, 3, 3, 1, -3}
 	// Decoded fraction.
-	rf, err = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -60,11 +60,11 @@ func TestDecode(t *testing.T) {
 	// Case for when the value to be decoded is 10717.02.
 	c = []int64{-2, -8, 8, -10, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 10}
 	// Parameters.
-	b, p, q = 10, -4, 8
+	b, p, q, d = 10, -4, 8, 16
 	// Expected fraction.
 	ef = big.NewRat(107170200, 10000)
 	// Decoded fraction.
-	rf, err = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}
@@ -79,7 +79,7 @@ func TestDecode(t *testing.T) {
 	// Expected fraction.
 	ef = big.NewRat(670592745, 10000)
 	// Decoded fraction.
-	rf, err = Decode(c, b, p, q)
+	rf, err = Decode(c, b, p, q, d)
 	if err != nil {
 		t.Error(err)
 	}

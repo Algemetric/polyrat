@@ -170,13 +170,27 @@ func TestValidateNumerator(t *testing.T) {
 func TestValidateDegreeOfCode(t *testing.T) {
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
+	// Degree parameter.
+	d := 16
 	// Decoded fraction.
-	err := validateDegreeOfCode(c)
+	err := validateDegreeOfCode(c, d)
 	if err == nil {
 		t.Error("an error should be thrown when the degree of the code is not a power of 2")
 	} else {
 		if err.Error() != ErrCodeDegreeIsNotAPowerOf2.Error() {
 			t.Error(ErrCodeDegreeIsNotAPowerOf2.Error())
+		}
+	}
+	// Check if the code received has the right degree.
+	// Code should be of size 16, but is 32.
+	c = []int64{5, 5, 0, -3, -3, 1, 0, 0, 0, 0, 0, 0, -5, -14, -26, -40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	// Check code degree.
+	err = validateDegreeOfCode(c, d)
+	if err == nil {
+		t.Error("an error should be thrown when the code has a different degree")
+	} else {
+		if err.Error() != ErrCodeDegreeIsDifferentFromDegree.Error() {
+			t.Error(ErrCodeDegreeIsDifferentFromDegree.Error())
 		}
 	}
 }
@@ -195,10 +209,10 @@ func TestValidateEncodingParameters(t *testing.T) {
 
 func TestValidateDecodingParameters(t *testing.T) {
 	// Parameters.
-	b, p, q := 7, -4, 1
+	b, p, q, d := 7, -4, 1, 8
 	// Expected code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1, -2}
-	err := validateDecodingParameters(c, b, p, q)
+	err := validateDecodingParameters(c, b, p, q, d)
 	if err != nil {
 		t.Error("parameters should be valid for decoding")
 	}
