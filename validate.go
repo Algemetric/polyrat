@@ -155,7 +155,29 @@ func validateDenominator(den *big.Int, b, p int) error {
 	return nil
 }
 
-func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
+func validateDegreeOfCode(code []int64, d int) error {
+	// Code degree.
+	cd := len(code)
+	// Check if d is a power of 2.
+	// Log base 2 of d.
+	floatD := float64(cd)
+	logD := math.Log2(floatD)
+	// Integer part of log base 2 of d.
+	intLog := math.Round(logD)
+	// Code degree recalculated.
+	cdr := math.Pow(2.0, intLog)
+	// Check if code degree is a power of 2.
+	if floatD != cdr {
+		return ErrCodeDegreeIsNotAPowerOf2
+	}
+	// Check if code degree is the same as the given degree.
+	if d != cd {
+		return ErrCodeDegreeIsDifferentFromDegree
+	}
+	return nil
+}
+
+func validateGeneralParameters(b, p, q, d int) error {
 	// Error variable.
 	var err error
 	// Validate modulo b.
@@ -177,6 +199,17 @@ func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
+	// Error variable.
+	var err error
+	// Validate parameters that are common to encoding and decoding.
+	err = validateGeneralParameters(b, p, q, d)
+	if err != nil {
+		return err
+	}
 	// Validate fraction.
 	err = validateFraction(num, den, b, p, q)
 	if err != nil {
@@ -185,41 +218,10 @@ func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 	return nil
 }
 
-func validateDegreeOfCode(code []int64, deg int) error {
-	// Degree of code.
-	d := len(code)
-	// Check if d is a power of 2.
-	// Log base 2 of d.
-	floatD := float64(d)
-	logD := math.Log2(floatD)
-	// Integer part of log base 2 of d.
-	intLog := math.Round(logD)
-	// Recalculated d.
-	d2 := math.Pow(2.0, intLog)
-	// Check if code degree is a power of 2.
-	if floatD != d2 {
-		return ErrCodeDegreeIsNotAPowerOf2
-	}
-	// Check if code degree is the same as the given degree.
-	if deg != d {
-		return ErrCodeDegreeIsDifferentFromDegree
-	}
-	return nil
-}
-
 func validateDecodingParameters(code []int64, b, p, q, d int) error {
 	var err error
-	// Validate modulo b.
-	err = validateModulo(b)
-	if err != nil {
-		return err
-	}
-	// Validade smallest power of expansion.
-	err = validateSmallestPowerOfExpansion(p, q)
-	if err != nil {
-		return err
-	}
-	err = validateGreatestPowerOfExpansion(q)
+	// Validate parameters that are common to encoding and decoding.
+	err = validateGeneralParameters(b, p, q, d)
 	if err != nil {
 		return err
 	}
