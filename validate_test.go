@@ -99,6 +99,15 @@ func TestValidateDenominator(t *testing.T) {
 			t.Error(ErrDenominatorIsNotEqualToBToThePowerOfP.Error())
 		}
 	}
+
+	// Case for when denominator is 0.
+	d = big.NewInt(0)
+	// Parameters.
+	b, p = 10, -4
+	err = validateDenominator(d, b, p)
+	if err != ErrDenominatorIsZero {
+		t.Error("a zero denominator should throw an error")
+	}
 }
 
 func TestValidateNumerator(t *testing.T) {

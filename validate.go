@@ -141,6 +141,10 @@ func validateNumerator(num *big.Int, b, p, q int) error {
 }
 
 func validateDenominator(den *big.Int, b, p int) error {
+	// Check if denominator is zero.
+	if den.Cmp(big.NewInt(0)) == 0 {
+		return ErrDenominatorIsZero
+	}
 	absP := math.Abs(float64(p))
 	bPowP := big.NewInt(int64(math.Pow(float64(b), absP)))
 	// Original condition: denominator == b^(|p|).
@@ -152,9 +156,6 @@ func validateDenominator(den *big.Int, b, p int) error {
 }
 
 func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
-	// Generate fraction.
-	f := big.NewRat(1, 1)
-	f.SetFrac(num, den)
 	// Error variable.
 	var err error
 	// Validate modulo b.

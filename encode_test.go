@@ -1,7 +1,6 @@
 package sim2d
 
 import (
-	"fmt"
 	"math/big"
 	"strings"
 	"testing"
@@ -81,5 +80,14 @@ func TestEncode(t *testing.T) {
 	if strings.Compare(ef.String(), rf.String()) != 0 {
 		t.Errorf("error decoding, expected %s but got %s", ef.String(), rf.String())
 	}
-	fmt.Printf("\nFraction = %s\n", rf.String())
+
+	// Case for when denominator is 0.
+	num = big.NewInt(1)
+	den = big.NewInt(0)
+	// Parameters.
+	b, p, q, d = 10, -4, 8, 16
+	c, err = Encode(num, den, b, p, q, d)
+	if err != ErrDenominatorIsZero {
+		t.Error("denominator cannot be zero")
+	}
 }
