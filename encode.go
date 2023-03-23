@@ -2,10 +2,15 @@ package sim2d
 
 import "math/big"
 
-// Encode encodes a fraction into a polynomial.
-// The numerator and denominator inputs should be given as strings
-// and then transformed into big.Int numbers. That will allow for
-// fractions with arbitrary-size numbers.
+// Encode encodes a rational number into a set of polynomial degrees.
+// The function accepts as inputs a fraction and a set of parameters.
+// This fraction can be given by a 64-bits numerator, and denominator,
+// or by a string representing the fraction at hand.
+// The string input is more suitable for arbitrary-size numbers and will
+// be transformed into an irreducible version of the same fraction before
+// calculation.
+// Keeping rationals as fractions during computations will preserve accuracy
+// in the generation of expansions and the final set of polynomial powers.
 func Encode(num, den *big.Int, b, p, q, d int) ([]int64, error) {
 	// Input validation.
 	// All the parameters will be analyzed through specific bounds

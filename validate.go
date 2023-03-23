@@ -5,58 +5,6 @@ import (
 	"math/big"
 )
 
-func validateModulo(b int) error {
-	// b >= 2.
-	if b < 2 {
-		return ErrBIsLessThan2
-	}
-	return nil
-}
-
-func validateSmallestPowerOfExpansion(p, q int) error {
-	// p < q.
-	if p >= q {
-		return ErrPIsLessThanQ
-	}
-	// p < 0.
-	if p >= 0 {
-		return ErrPIsGreaterThanOrEqualToZero
-	}
-	return nil
-}
-
-func validateGreatestPowerOfExpansion(q int) error {
-	// q > 0.
-	if q <= 0 {
-		return ErrQIsLessThanOrEqualToZero
-	}
-	return nil
-}
-
-func validateDegree(p, q, d int) error {
-	// d >= 1.
-	if d < 1 {
-		return ErrDIsLessThanOne
-	}
-	// d is a power of 2.
-	// Log base 2 of d.
-	floatD := float64(d)
-	logD := math.Log2(floatD)
-	// Integer part of log base 2 of d.
-	intLog := math.Round(logD)
-	// Recalculated d.
-	d2 := math.Pow(2.0, intLog)
-	if floatD != d2 {
-		return ErrDIsNotAPowerOf2
-	}
-	// d > q + |p|.
-	absP := math.Abs(float64(p))
-	if d <= (q + int(absP)) {
-		return ErrDIsLessThanOrEqualToQPlusP
-	}
-	return nil
-}
-
 func validateFraction(num, den *big.Int, b, p, q int) error {
 	// Validate numerator.
 	err := validateNumerator(num, b, p, q)
@@ -168,7 +116,7 @@ func validateDegreeOfCode(code []int64, d int) error {
 	cdr := math.Pow(2.0, intLog)
 	// Check if code degree is a power of 2.
 	if floatD != cdr {
-		return ErrCodeDegreeIsNotAPowerOf2
+		return ErrCodeDegreeIsNotAPowerOfTwo
 	}
 	// Check if code degree is the same as the given degree.
 	if d != cd {
@@ -177,39 +125,9 @@ func validateDegreeOfCode(code []int64, d int) error {
 	return nil
 }
 
-func validateGeneralParameters(b, p, q, d int) error {
-	// Error variable.
-	var err error
-	// Validate modulo b.
-	err = validateModulo(b)
-	if err != nil {
-		return err
-	}
-	// Validade smallest power of expansion.
-	err = validateSmallestPowerOfExpansion(p, q)
-	if err != nil {
-		return err
-	}
-	err = validateGreatestPowerOfExpansion(q)
-	if err != nil {
-		return err
-	}
-	// Validate degree.
-	err = validateDegree(p, q, d)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 	// Error variable.
 	var err error
-	// Validate parameters that are common to encoding and decoding.
-	err = validateGeneralParameters(b, p, q, d)
-	if err != nil {
-		return err
-	}
 	// Validate fraction.
 	err = validateFraction(num, den, b, p, q)
 	if err != nil {
@@ -220,11 +138,6 @@ func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 
 func validateDecodingParameters(code []int64, b, p, q, d int) error {
 	var err error
-	// Validate parameters that are common to encoding and decoding.
-	err = validateGeneralParameters(b, p, q, d)
-	if err != nil {
-		return err
-	}
 	// Validate if degree of code is a power of 2.
 	err = validateDegreeOfCode(code, d)
 	if err != nil {
