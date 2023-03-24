@@ -10,9 +10,13 @@ import (
 func TestEncode(t *testing.T) {
 	num := big.NewInt(-44979)
 	den := big.NewInt(2401)
-	b, p, q, d := 7, -4, 1, 8
+	// Create parameters (b, p, q, d).
+	params, err := NewParameters(7, -4, 1, 8)
+	if err != nil {
+		t.Error(err)
+	}
 	// Calculate code.
-	c, err := Encode(num, den, b, p, q, d)
+	c, err := Encode(num, den, params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -29,8 +33,12 @@ func TestEncode(t *testing.T) {
 	// The reduced form of 1460326978/1331 is 12068818/11.
 	num = big.NewInt(1460326978)
 	den = big.NewInt(1331)
-	b, p, q, d = 11, -3, 6, 16
-	c, err = Encode(num, den, b, p, q, d)
+	// Create parameters (b, p, q, d).
+	params, err = NewParameters(11, -3, 6, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	c, err = Encode(num, den, params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -47,8 +55,12 @@ func TestEncode(t *testing.T) {
 	// 23403339412867/10000 results in [1, 4, -1, 4, 3, 3, 0, 4, 3, 2, 0, 0, 3, 3, 1, -3].
 	num = big.NewInt(23403339412867)
 	den = big.NewInt(10000)
-	b, p, q, d = 10, -4, 10, 16
-	c, err = Encode(num, den, b, p, q, d)
+	// Create parameters (b, p, q, d).
+	params, err = NewParameters(10, -4, 10, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	c, err = Encode(num, den, params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -64,16 +76,19 @@ func TestEncode(t *testing.T) {
 	// Case for when the value to be encoded is 67059.2745.
 	num = big.NewInt(670592745)
 	den = big.NewInt(10000)
-	// Parameters.
-	b, p, q, d = 10, -4, 8, 16
-	c, err = Encode(num, den, b, p, q, d)
+	// Create parameters (b, p, q, d).
+	params, err = NewParameters(10, -4, 8, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	c, err = Encode(num, den, params)
 	if err != nil {
 		t.Error(err)
 	}
 	// Expected fraction.
 	ef := big.NewRat(670592745, 10000)
 	// Decoded fraction.
-	rf, err := Decode(c, b, p, q, d)
+	rf, err := Decode(c, params)
 	if err != nil {
 		t.Error(err)
 	}
@@ -82,11 +97,10 @@ func TestEncode(t *testing.T) {
 	}
 
 	// Case for when denominator is 0.
+	// Parameters are still 10, -4, 8, 16 (b, p, q, d).
 	num = big.NewInt(1)
 	den = big.NewInt(0)
-	// Parameters.
-	b, p, q, d = 10, -4, 8, 16
-	c, err = Encode(num, den, b, p, q, d)
+	c, err = Encode(num, den, params)
 	if err != ErrDenominatorIsZero {
 		t.Error("denominator cannot be zero")
 	}

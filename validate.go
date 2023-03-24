@@ -5,26 +5,26 @@ import (
 	"math/big"
 )
 
-func validateFraction(num, den *big.Int, b, p, q int) error {
+func validateFraction(num, den *big.Int, params *Parameters) error {
 	// Validate numerator.
-	err := validateNumerator(num, b, p, q)
+	err := validateNumerator(num, params)
 	if err != nil {
 		return err
 	}
 	// Validate denominator.
-	err = validateDenominator(den, b, p)
+	err = validateDenominator(den, params)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func validateNumerator(num *big.Int, b, p, q int) error {
+func validateNumerator(num *big.Int, params *Parameters) error {
 	// Define a common component of all bounds: b^(q-p+1) - 1.
 	// Exponent: b^(q-p+1).
-	e := big.NewInt(int64(q - p + 1))
+	e := big.NewInt(int64(params.Q - params.P + 1))
 	// b^(q-p+1) - 1.
-	commonEquation := big.NewInt(int64(b))
+	commonEquation := big.NewInt(int64(params.B))
 	commonEquation.Exp(commonEquation, e, nil)
 	commonEquation.Sub(commonEquation, big.NewInt(1))
 	// Define variables for lower and upper bound.
@@ -37,12 +37,12 @@ func validateNumerator(num *big.Int, b, p, q int) error {
 	// We define the lower and upper bounds by defining the equations in separated parts.
 	// Lower bound is -b/2 x (b^(q-p+1) - 1) / (b-1).
 	// Upper bound: (b/2 - 1/1) x ((b^(q-p+1) - 1) / 1)
-	if b%2 == 0 {
+	if params.B%2 == 0 {
 		// Even:
 		// First operand: b/2. Later we can just multiply by -1 or subtract by -1 to achieve the lower and upper bound.
-		firstOperand.Mul(firstOperand, big.NewRat(int64(b), 2))
+		firstOperand.Mul(firstOperand, big.NewRat(int64(params.B), 2))
 		// Second operand: ((b^(q-p+1) - 1) / (b-1)).
-		secondOperand.Mul(secondOperand, big.NewRat(1, int64(b)-1))
+		secondOperand.Mul(secondOperand, big.NewRat(1, int64(params.B)-1))
 		secondOperand.SetFrac(commonEquation, secondOperand.Denom())
 
 		// Lower bound is -b/2 x (b^(q-p+1) - 1) / (b-1).
@@ -53,7 +53,7 @@ func validateNumerator(num *big.Int, b, p, q int) error {
 
 		// Upper bound: (b/2 - 1/1) x ((b^(q-p+1) - 1) / 1)
 		// b/2 - 1/1 = (b-2)/2.
-		upperBound.Mul(upperBound, big.NewRat(int64(b-2), 2))
+		upperBound.Mul(upperBound, big.NewRat(int64(params.B-2), 2))
 		// (b-2)/2 x ((b^(q-p+1) - 1) / 1).
 		secondOperand.SetFrac(secondOperand.Num(), big.NewInt(1))
 		upperBound.Mul(upperBound, secondOperand)
@@ -88,13 +88,13 @@ func validateNumerator(num *big.Int, b, p, q int) error {
 	return nil
 }
 
-func validateDenominator(den *big.Int, b, p int) error {
+func validateDenominator(den *big.Int, params *Parameters) error {
 	// Check if denominator is zero.
 	if den.Cmp(big.NewInt(0)) == 0 {
 		return ErrDenominatorIsZero
 	}
-	absP := math.Abs(float64(p))
-	bPowP := big.NewInt(int64(math.Pow(float64(b), absP)))
+	absP := math.Abs(float64(params.P))
+	bPowP := big.NewInt(int64(math.Pow(float64(params.B), absP)))
 	// Original condition: denominator == b^(|p|).
 	denominatorIsNotEqualToBToThePowerOfP := den.Cmp(bPowP) != 0
 	if denominatorIsNotEqualToBToThePowerOfP {
@@ -125,18 +125,18 @@ func validateDegreeOfCode(code []int64, d int) error {
 	return nil
 }
 
-func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
+func validateEncodingParameters(num, den *big.Int, params *Parameters) error {
 	// Validate fraction.
-	err := validateFraction(num, den, b, p, q)
+	err := validateFraction(num, den, params)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func validateDecodingParameters(code []int64, b, p, q, d int) error {
+func validateDecodingParameters(code []int64, params *Parameters) error {
 	// Validate if degree of code is a power of 2.
-	err := validateDegreeOfCode(code, d)
+	err := validateDegreeOfCode(code, params.D)
 	if err != nil {
 		return err
 	}

@@ -11,44 +11,44 @@ import "math/big"
 // calculation.
 // Keeping rationals as fractions during computations will preserve accuracy
 // in the generation of expansions and the final set of polynomial powers.
-func Encode(num, den *big.Int, b, p, q, d int) ([]int64, error) {
+func Encode(num, den *big.Int, params *Parameters) ([]int64, error) {
 	// Input validation.
 	// All the parameters will be analyzed through specific bounds
 	// and also by the relationships between them.
-	err := validateEncodingParameters(num, den, b, p, q, d)
+	err := validateEncodingParameters(num, den, params)
 	if err != nil {
 		return nil, err
 	}
 	// Generate fraction with the given numerator and denominator.
 	f := big.NewRat(1, 1)
 	f.SetFrac(num, den)
-	// Length of the polynomial.
-	pl := polynomialLength(q, p)
 	// Numerator from the given fraction.
-	n := isolateNumerator(f, b, p)
+	n := isolateNumerator(f, params)
 	// Calculate expansion.
-	e, err := expansion(pl, b, n)
+	e, err := expansion(n, params)
 	if err != nil {
 		return nil, err
 	}
 	// Generate encoding (code).
-	c := generateCode(p, pl, d, e)
+	c := generateCode(e, params)
 	// return encoding.
 	return c, nil
 }
 
-func generateCode(p, l, d int, exp []float64) []int64 {
+func generateCode(exp []float64, params *Parameters) []int64 {
 	var code []int64
+	// Polynomial length.
+	pl := polynomialLength(params)
 	// Members of the expansion from -p to the end of the vector.
-	for i := -p; i < len(exp); i++ {
+	for i := -params.P; i < len(exp); i++ {
 		code = append(code, int64(exp[i]))
 	}
 	// d - l gives the number of zeros to be concatenated at the vector.
-	for i := 0; i < (d - l); i++ {
+	for i := 0; i < (params.D - pl); i++ {
 		code = append(code, 0)
 	}
 	// Concatenate to the vector, from 0 to (-p) - 1, the elements of the expansion.
-	for i := 0; i < -p; i++ {
+	for i := 0; i < -params.P; i++ {
 		code = append(code, -int64(exp[i]))
 	}
 	// Return code.

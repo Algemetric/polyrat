@@ -17,10 +17,13 @@ func TestSymmetricModulo(t *testing.T) {
 	}
 	// Parameters.
 	r := []int64{1, 7, 49, 343, 2401, 16807, 117649}
-	p := -4
-	b := 7
+	// Create parameters (b, p, q, d).
+	params, err := NewParameters(7, -4, 1, 16)
+	if err != nil {
+		t.Error(err)
+	}
 	// Numerator from the given fraction.
-	n = isolateNumerator(n, b, p)
+	n = isolateNumerator(n, params)
 	// Iterate over radix values.
 	for i := 0; i < len(r); i++ {
 		// Calculates the symmetric modulo.
@@ -39,11 +42,14 @@ func TestSymmetricModulo(t *testing.T) {
 func TestExpansion(t *testing.T) {
 	// Input values: number (n), radix (r).
 	f := big.NewRat(-44979, 2401)
-	r, p, q := 7, -4, 1
-	n := isolateNumerator(f, r, p)
-	pl := polynomialLength(q, p)
+	// Create parameters (b, p, q, d).
+	params, err := NewParameters(7, -4, 1, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	n := isolateNumerator(f, params)
 	// Calculate expansion.
-	e, err := expansion(pl, r, n)
+	e, err := expansion(n, params)
 	if err != nil {
 		t.Error(err)
 	}
