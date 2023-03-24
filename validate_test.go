@@ -103,10 +103,13 @@ func TestValidateNumerator(t *testing.T) {
 func TestValidateDegreeOfCode(t *testing.T) {
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
-	// Degree parameter.
-	d := 16
+	// Create parameters (b, p, q, d).
+	params, err := NewParameters(7, -2, 3, 16)
+	if err != nil {
+		t.Error(err)
+	}
 	// Decoded fraction.
-	err := validateDegreeOfCode(c, d)
+	err = validateDegreeOfCode(c, params)
 	if err == nil {
 		t.Error("an error should be thrown when the degree of the code is not a power of 2")
 	} else {
@@ -118,7 +121,7 @@ func TestValidateDegreeOfCode(t *testing.T) {
 	// Code should be of size 16, but is 32.
 	c = []int64{5, 5, 0, -3, -3, 1, 0, 0, 0, 0, 0, 0, -5, -14, -26, -40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	// Check code degree.
-	err = validateDegreeOfCode(c, d)
+	err = validateDegreeOfCode(c, params)
 	if err == nil {
 		t.Error("an error should be thrown when the code has a different degree")
 	} else {

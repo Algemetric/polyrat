@@ -103,7 +103,7 @@ func validateDenominator(den *big.Int, params *Parameters) error {
 	return nil
 }
 
-func validateDegreeOfCode(code []int64, d int) error {
+func validateDegreeOfCode(code []int64, params *Parameters) error {
 	// Code degree.
 	cd := len(code)
 	// Check if d is a power of 2.
@@ -119,7 +119,7 @@ func validateDegreeOfCode(code []int64, d int) error {
 		return ErrCodeDegreeIsNotAPowerOfTwo
 	}
 	// Check if code degree is the same as the given degree.
-	if d != cd {
+	if params.D != cd {
 		return ErrCodeDegreeIsDifferentFromDegree
 	}
 	return nil
@@ -136,7 +136,7 @@ func validateEncodingParameters(num, den *big.Int, params *Parameters) error {
 
 func validateDecodingParameters(code []int64, params *Parameters) error {
 	// Validate if degree of code is a power of 2.
-	err := validateDegreeOfCode(code, params.D)
+	err := validateDegreeOfCode(code, params)
 	if err != nil {
 		return err
 	}
