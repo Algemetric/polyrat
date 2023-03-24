@@ -36,7 +36,7 @@ func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
 }
 
 func polynomialLength(params *Parameters) int {
-	return params.Q + (-1 * params.P) + 1
+	return params.MaxPower() + (-1 * params.MinPower()) + 1
 }
 
 func expansion(numerator *big.Rat, params *Parameters) ([]float64, error) {
@@ -44,7 +44,7 @@ func expansion(numerator *big.Rat, params *Parameters) ([]float64, error) {
 	// Length of the polynomial.
 	pl := polynomialLength(params)
 	// Base as a float 64 bits.
-	b := float64(params.B)
+	b := float64(params.Base())
 	for i := 0; i < pl; i++ {
 		// Second operand.
 		nb := math.Pow(b, float64(i))
@@ -70,7 +70,7 @@ func expansion(numerator *big.Rat, params *Parameters) ([]float64, error) {
 
 // isolateNumerator makes the fraction display the numerator over 1.
 func isolateNumerator(f *big.Rat, params *Parameters) *big.Rat {
-	bp := math.Pow(float64(params.B), float64(-params.P))
+	bp := math.Pow(float64(params.Base()), float64(-params.MinPower()))
 	db := big.NewRat(int64(bp), 1)
 	return f.Mul(f, db)
 }

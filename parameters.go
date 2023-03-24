@@ -6,10 +6,10 @@ import "math"
 // and polynomial degree information given to the encoding and
 // decoding functions.
 type Parameters struct {
-	B int // b is the base (modulo).
-	Q int // q is the higher power.
-	P int // p is the lower power.
-	D int // d is the degree of the polynomial.
+	b int // b is the base (modulo).
+	q int // q is the higher power.
+	p int // p is the lower power.
+	d int // d is the degree of the polynomial.
 }
 
 // NewParameters creates a struct that validates all the parameters
@@ -19,10 +19,10 @@ func NewParameters(b, p, q, d int) (*Parameters, error) {
 	// These inputs are set so that they can inform
 	// the user about the parameters that caused an error.
 	params := new(Parameters)
-	params.B = b
-	params.Q = q
-	params.P = p
-	params.D = d
+	params.b = b
+	params.q = q
+	params.p = p
+	params.d = d
 	// Validation of parameters.
 	err := params.validate()
 	if err != nil {
@@ -31,10 +31,30 @@ func NewParameters(b, p, q, d int) (*Parameters, error) {
 	return params, nil
 }
 
+// Getter for base.
+func (params *Parameters) Base() int {
+	return params.b
+}
+
+// Getter for higher power.
+func (params *Parameters) MaxPower() int {
+	return params.q
+}
+
+// Getter for lower power.
+func (params *Parameters) MinPower() int {
+	return params.p
+}
+
+// Getter for degree.
+func (params *Parameters) Degree() int {
+	return params.d
+}
+
 // validateB validates criteria for the base.
 func (params *Parameters) validateB() error {
 	// b >= 2.
-	if params.B < 2 {
+	if params.b < 2 {
 		return ErrBIsLessThanTwo
 	}
 	return nil
@@ -43,11 +63,11 @@ func (params *Parameters) validateB() error {
 // validateP validates criteria for the smallest power of expansion.
 func (params *Parameters) validateP() error {
 	// p < q.
-	if params.P >= params.Q {
+	if params.p >= params.q {
 		return ErrPIsLessThanQ
 	}
 	// p < 0.
-	if params.P >= 0 {
+	if params.p >= 0 {
 		return ErrPIsGreaterThanOrEqualToZero
 	}
 	return nil
@@ -56,7 +76,7 @@ func (params *Parameters) validateP() error {
 // validateQ validates criteria for the greatest power of expansion.
 func (params *Parameters) validateQ() error {
 	// q > 0.
-	if params.Q <= 0 {
+	if params.q <= 0 {
 		return ErrQIsLessThanOrEqualToZero
 	}
 	return nil
@@ -65,12 +85,12 @@ func (params *Parameters) validateQ() error {
 // validateD validates criteria for the polynomial degree.
 func (params *Parameters) validateD() error {
 	// d >= 1.
-	if params.D < 1 {
+	if params.d < 1 {
 		return ErrDIsLessThanOne
 	}
 	// d is a power of 2.
 	// Log base 2 of d.
-	floatD := float64(params.D)
+	floatD := float64(params.d)
 	logD := math.Log2(floatD)
 	// Integer part of log base 2 of d.
 	intLog := math.Round(logD)
@@ -80,8 +100,8 @@ func (params *Parameters) validateD() error {
 		return ErrDIsNotAPowerOfTwo
 	}
 	// d > q + |p|.
-	absP := math.Abs(float64(params.P))
-	if params.D <= (params.Q + int(absP)) {
+	absP := math.Abs(float64(params.p))
+	if params.d <= (params.q + int(absP)) {
 		return ErrDIsLessThanOrEqualToQPlusP
 	}
 	return nil

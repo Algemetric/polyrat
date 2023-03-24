@@ -22,9 +22,9 @@ func validateFraction(num, den *big.Int, params *Parameters) error {
 func validateNumerator(num *big.Int, params *Parameters) error {
 	// Define a common component of all bounds: b^(q-p+1) - 1.
 	// Exponent: b^(q-p+1).
-	e := big.NewInt(int64(params.Q - params.P + 1))
+	e := big.NewInt(int64(params.MaxPower() - params.MinPower() + 1))
 	// b^(q-p+1) - 1.
-	commonEquation := big.NewInt(int64(params.B))
+	commonEquation := big.NewInt(int64(params.Base()))
 	commonEquation.Exp(commonEquation, e, nil)
 	commonEquation.Sub(commonEquation, big.NewInt(1))
 	// Define variables for lower and upper bound.
@@ -37,12 +37,12 @@ func validateNumerator(num *big.Int, params *Parameters) error {
 	// We define the lower and upper bounds by defining the equations in separated parts.
 	// Lower bound is -b/2 x (b^(q-p+1) - 1) / (b-1).
 	// Upper bound: (b/2 - 1/1) x ((b^(q-p+1) - 1) / 1)
-	if params.B%2 == 0 {
+	if params.Base()%2 == 0 {
 		// Even:
 		// First operand: b/2. Later we can just multiply by -1 or subtract by -1 to achieve the lower and upper bound.
-		firstOperand.Mul(firstOperand, big.NewRat(int64(params.B), 2))
+		firstOperand.Mul(firstOperand, big.NewRat(int64(params.Base()), 2))
 		// Second operand: ((b^(q-p+1) - 1) / (b-1)).
-		secondOperand.Mul(secondOperand, big.NewRat(1, int64(params.B)-1))
+		secondOperand.Mul(secondOperand, big.NewRat(1, int64(params.Base())-1))
 		secondOperand.SetFrac(commonEquation, secondOperand.Denom())
 
 		// Lower bound is -b/2 x (b^(q-p+1) - 1) / (b-1).
@@ -53,7 +53,7 @@ func validateNumerator(num *big.Int, params *Parameters) error {
 
 		// Upper bound: (b/2 - 1/1) x ((b^(q-p+1) - 1) / 1)
 		// b/2 - 1/1 = (b-2)/2.
-		upperBound.Mul(upperBound, big.NewRat(int64(params.B-2), 2))
+		upperBound.Mul(upperBound, big.NewRat(int64(params.Base()-2), 2))
 		// (b-2)/2 x ((b^(q-p+1) - 1) / 1).
 		secondOperand.SetFrac(secondOperand.Num(), big.NewInt(1))
 		upperBound.Mul(upperBound, secondOperand)
@@ -93,8 +93,8 @@ func validateDenominator(den *big.Int, params *Parameters) error {
 	if den.Cmp(big.NewInt(0)) == 0 {
 		return ErrDenominatorIsZero
 	}
-	absP := math.Abs(float64(params.P))
-	bPowP := big.NewInt(int64(math.Pow(float64(params.B), absP)))
+	absP := math.Abs(float64(params.MinPower()))
+	bPowP := big.NewInt(int64(math.Pow(float64(params.Base()), absP)))
 	// Original condition: denominator == b^(|p|).
 	denominatorIsNotEqualToBToThePowerOfP := den.Cmp(bPowP) != 0
 	if denominatorIsNotEqualToBToThePowerOfP {
@@ -119,7 +119,7 @@ func validateDegreeOfCode(code []int64, params *Parameters) error {
 		return ErrCodeDegreeIsNotAPowerOfTwo
 	}
 	// Check if code degree is the same as the given degree.
-	if params.D != cd {
+	if params.Degree() != cd {
 		return ErrCodeDegreeIsDifferentFromDegree
 	}
 	return nil

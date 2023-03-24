@@ -40,15 +40,15 @@ func generateCode(exp []float64, params *Parameters) []int64 {
 	// Polynomial length.
 	pl := polynomialLength(params)
 	// Members of the expansion from -p to the end of the vector.
-	for i := -params.P; i < len(exp); i++ {
+	for i := -params.MinPower(); i < len(exp); i++ {
 		code = append(code, int64(exp[i]))
 	}
 	// d - l gives the number of zeros to be concatenated at the vector.
-	for i := 0; i < (params.D - pl); i++ {
+	for i := 0; i < (params.Degree() - pl); i++ {
 		code = append(code, 0)
 	}
 	// Concatenate to the vector, from 0 to (-p) - 1, the elements of the expansion.
-	for i := 0; i < -params.P; i++ {
+	for i := 0; i < -params.MinPower(); i++ {
 		code = append(code, -int64(exp[i]))
 	}
 	// Return code.
