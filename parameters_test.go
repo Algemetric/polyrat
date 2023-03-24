@@ -5,6 +5,7 @@ import (
 )
 
 func TestValidateB(t *testing.T) {
+	// Check if an error is thrown when b is less than 2.
 	// Create parameters (b, p, q, d).
 	_, err := NewParameters(1, 0, 0, 0)
 	// b is valid if >= 2.
@@ -18,6 +19,7 @@ func TestValidateB(t *testing.T) {
 }
 
 func TestValidateP(t *testing.T) {
+	// Check if an error is thrown when p is less than q.
 	// Create parameters (b, p, q, d).
 	_, err := NewParameters(2, 1, 1, 0)
 	// p is valid if < q.
@@ -28,7 +30,8 @@ func TestValidateP(t *testing.T) {
 			t.Error(ErrPIsLessThanQ.Error())
 		}
 	}
-	// p is valid if < 0.
+
+	// Check if an error is thrown when p is greater than or equal to 0.
 	_, err = NewParameters(2, 0, 2, 0)
 	if err == nil {
 		t.Error("an error should be thrown when p is greater than or equal to 0")
@@ -40,6 +43,7 @@ func TestValidateP(t *testing.T) {
 }
 
 func TestValidateQ(t *testing.T) {
+	// Check if an error is thrown when q is less than or equal to 0.
 	// Create parameters (b, p, q, d).
 	_, err := NewParameters(2, -1, 0, 0)
 	// q is valid if > 0.
@@ -53,6 +57,7 @@ func TestValidateQ(t *testing.T) {
 }
 
 func TestValidateD(t *testing.T) {
+	// Check if an error is thrown when d is not a power of 2.
 	// Create parameters (b, p, q, d).
 	_, err := NewParameters(2, -4, 1, 3)
 	// d is valid if it is a power of 2.
@@ -63,7 +68,8 @@ func TestValidateD(t *testing.T) {
 			t.Error(ErrDIsNotAPowerOfTwo.Error())
 		}
 	}
-	// d is valid if it is >= 1.
+
+	// Check if an error is thrown when d is less than 1.
 	_, err = NewParameters(2, -4, 1, 0)
 	if err == nil {
 		t.Error("an error should be thrown when d is less than 1")
@@ -72,7 +78,8 @@ func TestValidateD(t *testing.T) {
 			t.Error(ErrDIsLessThanOne.Error())
 		}
 	}
-	// d is valid if > q + |p|.
+
+	// Check if an error is thrown when d is less than or equal to q plus the absolute value of p (d <= q + |p|).
 	_, err = NewParameters(2, -1, 9, 8)
 	if err == nil {
 		t.Error("an error should be thrown when d is less than or equal to q plus the absolute value of p")
