@@ -126,10 +126,8 @@ func validateDegreeOfCode(code []int64, d int) error {
 }
 
 func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
-	// Error variable.
-	var err error
 	// Validate fraction.
-	err = validateFraction(num, den, b, p, q)
+	err := validateFraction(num, den, b, p, q)
 	if err != nil {
 		return err
 	}
@@ -137,9 +135,8 @@ func validateEncodingParameters(num, den *big.Int, b, p, q, d int) error {
 }
 
 func validateDecodingParameters(code []int64, b, p, q, d int) error {
-	var err error
 	// Validate if degree of code is a power of 2.
-	err = validateDegreeOfCode(code, d)
+	err := validateDegreeOfCode(code, d)
 	if err != nil {
 		return err
 	}

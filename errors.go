@@ -19,5 +19,5 @@ var (
 	ErrNumeratorIsNotInTheMessageSpaceRange  = errors.New("numerator should be inside the message space range")
 	ErrCodeDegreeIsNotAPowerOfTwo            = errors.New("code degree should be a power of 2")
 	ErrCodeDegreeIsDifferentFromDegree       = errors.New("code degree is different from the acceptable degree")
-	ErrDenominatorIsZero                     = errors.New("denominator cannot be zero")
+	ErrDenominatorIsZero                     = errors.New("denominator cannot be 0")
 )
