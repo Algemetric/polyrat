@@ -6,7 +6,8 @@ import (
 )
 
 func TestValidateDenominator(t *testing.T) {
-	// Input values: fraction number (n), radix (r), expected modulo (em).
+	// Check if denominator is the base to the power of the absolute value of p.
+	// Input values: fraction number (n), and base from from parameters.
 	d := big.NewInt(2401)
 	// Create parameters (b, p, q, d).
 	params, err := NewParameters(2, -8, 1, 16)
@@ -23,7 +24,7 @@ func TestValidateDenominator(t *testing.T) {
 		}
 	}
 
-	// Case for when denominator is 0.
+	// Check if an error is thrown when denominator is 0.
 	d = big.NewInt(0)
 	// Parameters.
 	params, err = NewParameters(10, -4, 1, 8)
@@ -38,7 +39,7 @@ func TestValidateDenominator(t *testing.T) {
 }
 
 func TestValidateNumerator(t *testing.T) {
-	// b is EVEN.
+	// Check range when b is EVEN.
 	// Create parameters (b, p, q, d).
 	params, err := NewParameters(10, -2, 3, 16)
 	if err != nil {
@@ -60,13 +61,14 @@ func TestValidateNumerator(t *testing.T) {
 			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
-	// b is ODD.
+
+	// Check range when b is ODD.
 	// Create parameters (b, p, q, d).
 	params, err = NewParameters(7, -2, 3, 16)
 	if err != nil {
 		t.Error(err)
 	}
-	// Check that numerator -58830 is not in the message space [,].
+	// Check that numerator -58830 is NOT in the message space.
 	n.SetInt64(-58830)
 	err = validateNumerator(n, params)
 	if err == nil {
@@ -76,13 +78,13 @@ func TestValidateNumerator(t *testing.T) {
 			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
-	// Check that numerator -58823 is in the message space [,].
+	// Check that numerator -58823 is in the message space.
 	n.SetInt64(-58823)
 	err = validateNumerator(n, params)
 	if err != nil {
 		t.Error("an error should not be thrown because the numerator is in the message space range")
 	}
-	// Check that numerator 58832 is not in the message space [,].
+	// Check that numerator 58832 is NOT in the message space.
 	n.SetInt64(58832)
 	err = validateNumerator(n, params)
 	if err == nil {
@@ -92,7 +94,7 @@ func TestValidateNumerator(t *testing.T) {
 			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
 		}
 	}
-	// Check that numerator 58773 is in the message space [,].
+	// Check that numerator 58773 is in the message space.
 	n.SetInt64(58773)
 	err = validateNumerator(n, params)
 	if err != nil {
@@ -101,6 +103,7 @@ func TestValidateNumerator(t *testing.T) {
 }
 
 func TestValidateDegreeOfCode(t *testing.T) {
+	// Check if an error is thrown when the degree of the code is not a power of 2.
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
 	// Create parameters (b, p, q, d).
@@ -117,6 +120,7 @@ func TestValidateDegreeOfCode(t *testing.T) {
 			t.Error(ErrCodeDegreeIsNotAPowerOfTwo.Error())
 		}
 	}
+
 	// Check if the code received has the right degree.
 	// Code should be of size 16, but is 32.
 	c = []int64{5, 5, 0, -3, -3, 1, 0, 0, 0, 0, 0, 0, -5, -14, -26, -40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -132,6 +136,7 @@ func TestValidateDegreeOfCode(t *testing.T) {
 }
 
 func TestValidateEncodingParameters(t *testing.T) {
+	// Check that parameters are valid for encoding.
 	// Valid fraction.
 	num := big.NewInt(-44979)
 	den := big.NewInt(2401)
@@ -148,6 +153,7 @@ func TestValidateEncodingParameters(t *testing.T) {
 }
 
 func TestValidateDecodingParameters(t *testing.T) {
+	// Check that parameters are valid for decoding.
 	// Create parameters (b, p, q, d).
 	params, err := NewParameters(7, -4, 1, 8)
 	if err != nil {
