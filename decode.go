@@ -4,12 +4,12 @@ import (
 	"math/big"
 )
 
-// Decode decodes a polynomial into its original fraction.
-func Decode(code []int64, params *Parameters) (*big.Rat, error) {
+// Decode decodes a polynomial into its original rational.
+func Decode(code []int64, params *Parameters) (float64, error) {
 	// Validate input.
 	err := validateDecodingParameters(code, params)
 	if err != nil {
-		return nil, err
+		return 0.0, err
 	}
 	// Code length.
 	l := len(code)
@@ -23,8 +23,16 @@ func Decode(code []int64, params *Parameters) (*big.Rat, error) {
 	}
 	// Decoding powers used for evaluation.
 	ep := evaluationPowers(params)
-	// Return fraction.
-	return dotProduct(ep, original), nil
+	// Fraction.
+	f := dotProduct(ep, original)
+	// Calculates rational from fraction with "exact" flag.
+	r, e := f.Float64()
+	// If rational was not exact, then round it.
+	// TODO: check rationals ending in > 5 and < 5.
+	if !e {
+		r = roundUp(r, params)
+	}
+	return r, nil
 }
 
 func evaluationPowers(params *Parameters) []*big.Rat {

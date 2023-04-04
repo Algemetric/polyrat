@@ -5,74 +5,57 @@ import (
 	"math/big"
 )
 
-func symmetricModulo(n *big.Rat, r int64) (*big.Int, error) {
-	// Radix big integer.
-	radix := big.NewInt(r)
-	// Modulo = numerator % radix.
-	// We know that the numerator went through a process to produce n/1,
-	// therefore we can just take the numerator to calculate the modulo.
-	modulo := big.NewInt(0)
-	modulo.Mod(n.Num(), radix)
-	// Half radix.
-	// halfRadix = radix / 2
-	halfRadix := big.NewRat(1, 2)
-	rationalRadix := big.NewRat(1, 1)
-	rationalRadix.SetInt(radix)
-	halfRadix.Mul(halfRadix, rationalRadix)
-	// remainder <= 0 && halfRadix < remainder.
-	// To execute "0 <= modulo" we need to do "0 < modulo" and "0 == modulo" separately.
-	// Therefore, to have better visualization of the logic, we will give names for the comparison operands.
-	zero := big.NewRat(0, 1)
-	rationalModulo := big.NewRat(1, 1)
-	rationalModulo.SetInt(modulo)
-	moduloIsGreaterThanOrEqualToZero := zero.Cmp(rationalModulo) == -1 || zero.Cmp(rationalModulo) == 0
-	moduloIsLessThanHalfRadix := halfRadix.Cmp(rationalModulo) == -1
-	// remainder <= 0 && halfRadix < remainder.
-	if moduloIsGreaterThanOrEqualToZero && moduloIsLessThanHalfRadix {
-		rationalModulo.Sub(rationalModulo, rationalRadix)
+func symmetricModulo(n int64) int64 {
+	// Base.
+	b := int64(Base)
+	// Remainder.
+	r := n % b
+	// This condition is the inverse of 0 <= r && r < m/2.
+	if r < 0 || b/2 <= r {
+		r -= b
 	}
-
-	return rationalModulo.Num(), nil
+	return r
 }
 
 func polynomialLength(params *Parameters) int {
 	return params.MaxPower() + (-1 * params.MinPower()) + 1
 }
 
-func expansion(numerator *big.Rat, params *Parameters) ([]float64, error) {
-	var exp []float64
+func expansion(numerator int64, params *Parameters) []int64 {
+	var exp []int64
 	// Length of the polynomial.
 	pl := polynomialLength(params)
-	// Base as a float 64 bits.
-	b := float64(params.Base())
+	// Base.
+	b := int64(Base)
+	// First denominator of the sequence (d^0=1, d^1=10, d^2=100, ...).
+	d := int64(1)
 	for i := 0; i < pl; i++ {
-		// Second operand.
-		nb := math.Pow(b, float64(i))
-		so, err := symmetricModulo(numerator, int64(nb))
-		if err != nil {
-			return nil, err
+		// Numerator (with truncation).
+		// The original code was doing a floor division.
+		// The truncation will have the same effect.
+		n := numerator / d
+		// Symmetric modulo.
+		sm := symmetricModulo(n)
+		// Add to the set of expansions.
+		exp = append(exp, sm)
+		if exp[i] < 0 {
+			numerator = numerator + d*b
 		}
-		// First operand.
-		// b^(e+1).
-		fo, err := symmetricModulo(numerator, int64(nb*b))
-		if err != nil {
-			return nil, err
-		}
-		// (fo-so) / (nb / b)
-		fo.Sub(fo, so)
-		c := big.NewRat(fo.Int64(), int64(nb))
-		c2, _ := c.Float64()
-
-		exp = append(exp, c2)
+		d *= b
 	}
-	return exp, nil
+	return exp
 }
 
-// isolateNumerator makes the fraction display the numerator over 1.
-func isolateNumerator(f *big.Rat, params *Parameters) *big.Rat {
-	bp := math.Pow(float64(params.Base()), float64(-params.MinPower()))
-	db := big.NewRat(int64(bp), 1)
-	return f.Mul(f, db)
+func parseRational(rat float64, params *Parameters) int64 {
+	// Absolute value of p.
+	p := float64(-1 * params.MinPower())
+	// Base.
+	b := float64(params.Base())
+	// Base to the power of minimal power: b^(|p|).
+	bp := math.Pow(b, p)
+	// Rational transformed.
+	n := math.Trunc(rat * bp)
+	return int64(n)
 }
 
 func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
@@ -88,4 +71,26 @@ func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
 		dp.Add(dp, f)
 	}
 	return dp
+}
+
+func rationalToFraction(r float64, params *Parameters) *big.Rat {
+	// Absolute value of p.
+	absP := math.Abs(float64(params.MinPower()))
+	// Base to the power of the absolute value of p.
+	bPowP := math.Pow(float64(params.Base()), absP)
+	// Generate numerator by multiplying rational by b^{|p|} and taking the integer part.
+	n := int64(math.Trunc(r * bPowP))
+	// Generate denominator as b^{|p|}.
+	d := int64(bPowP)
+	// Generate fraction
+	return big.NewRat(n, d)
+}
+
+// roundUp rounds a float up to p (minimal power) decimal places.
+func roundUp(r float64, params *Parameters) float64 {
+	// Base to the power of the absolute value of p.
+	p := math.Pow(float64(params.Base()), float64(-1*params.MinPower()))
+	// Digit.
+	d := p * r
+	return math.Ceil(d) / p
 }
