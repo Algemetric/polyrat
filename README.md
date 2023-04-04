@@ -25,4 +25,12 @@ The error variable (i.e., `err`) must be checked for any returned error. If no e
 
 # Encode
 
+```
+func Encode(rat float64, params *Parameters) ([]int64, error)
+```
+
 # Decode
+
+```
+func Decode(code []int64, params *Parameters) (float64, error)
+```
