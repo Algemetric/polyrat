@@ -1,104 +1,26 @@
 package sim2d
 
 import (
-	"math/big"
 	"testing"
 )
 
-func TestValidateDenominator(t *testing.T) {
-	// Check if denominator is the base to the power of the absolute value of p.
-	// Input values: fraction number (n), and base from from parameters.
-	d := big.NewInt(2401)
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(2, -8, 1, 16)
-	if err != nil {
-		t.Error(err)
-	}
-	// Validate.
-	err = validateDenominator(d, params)
-	if err == nil {
-		t.Error("an error should be thrown when the denominator is not the base to the power of the absolute value of p")
-	} else {
-		if err.Error() != ErrDenominatorIsNotEqualToBToThePowerOfP.Error() {
-			t.Error(ErrDenominatorIsNotEqualToBToThePowerOfP.Error())
-		}
-	}
-
-	// Check if an error is thrown when denominator is 0.
-	d = big.NewInt(0)
-	// Parameters.
-	params, err = NewParameters(10, -4, 1, 8)
-	if err != nil {
-		t.Error(err)
-	}
-	// Validate.
-	err = validateDenominator(d, params)
-	if err != ErrDenominatorIsZero {
-		t.Error("a zero denominator should throw an error")
-	}
-}
-
-func TestValidateNumerator(t *testing.T) {
+func TestValidateInput(t *testing.T) {
 	// Check range when b is EVEN.
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(10, -2, 3, 16)
+	// In our case b will always be even since we defined base 10 as a constant.
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-2, 3, 16)
 	if err != nil {
 		t.Error(err)
 	}
-	// Check that numerator -523187 is in the message space [-555555, 444444].
-	n := big.NewInt(-523187)
-	err = validateNumerator(n, params)
-	if err != nil {
+	// Check that input -523187 is in the message space [-555555, 444444].
+	n := int64(-523187)
+	if inputIsInvalid(n, params) {
 		t.Error("an error should not be thrown because the numerator is in the message space range")
 	}
-	// Check that numerator 455192 is NOT in the message space [-555555, 444444].
-	n.SetInt64(455192)
-	err = validateNumerator(n, params)
-	if err == nil {
+	// Check that input 455192 is NOT in the message space [-555555, 444444].
+	n = 455192
+	if !inputIsInvalid(n, params) {
 		t.Error("an error should be thrown because the numerator is not in the message space range")
-	} else {
-		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
-			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
-		}
-	}
-
-	// Check range when b is ODD.
-	// Create parameters (b, p, q, d).
-	params, err = NewParameters(7, -2, 3, 16)
-	if err != nil {
-		t.Error(err)
-	}
-	// Check that numerator -58830 is NOT in the message space.
-	n.SetInt64(-58830)
-	err = validateNumerator(n, params)
-	if err == nil {
-		t.Error("an error should be thrown because the numerator is not in the message space range")
-	} else {
-		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
-			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
-		}
-	}
-	// Check that numerator -58823 is in the message space.
-	n.SetInt64(-58823)
-	err = validateNumerator(n, params)
-	if err != nil {
-		t.Error("an error should not be thrown because the numerator is in the message space range")
-	}
-	// Check that numerator 58832 is NOT in the message space.
-	n.SetInt64(58832)
-	err = validateNumerator(n, params)
-	if err == nil {
-		t.Error("an error should be thrown because the numerator is not in the message space range")
-	} else {
-		if err.Error() != ErrNumeratorIsNotInTheMessageSpaceRange.Error() {
-			t.Error(ErrNumeratorIsNotInTheMessageSpaceRange.Error())
-		}
-	}
-	// Check that numerator 58773 is in the message space.
-	n.SetInt64(58773)
-	err = validateNumerator(n, params)
-	if err != nil {
-		t.Error("an error should not be thrown because the numerator is in the message space range")
 	}
 }
 
@@ -106,8 +28,8 @@ func TestValidateDegreeOfCode(t *testing.T) {
 	// Check if an error is thrown when the degree of the code is not a power of 2.
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(7, -2, 3, 16)
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-2, 3, 16)
 	if err != nil {
 		t.Error(err)
 	}
@@ -135,27 +57,10 @@ func TestValidateDegreeOfCode(t *testing.T) {
 	}
 }
 
-func TestValidateEncodingParameters(t *testing.T) {
-	// Check that parameters are valid for encoding.
-	// Valid fraction.
-	num := big.NewInt(-44979)
-	den := big.NewInt(2401)
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(7, -4, 1, 8)
-	if err != nil {
-		t.Error(err)
-	}
-	// Validate.
-	err = validateEncodingParameters(num, den, params)
-	if err != nil {
-		t.Error("parameters should be valid for encoding")
-	}
-}
-
 func TestValidateDecodingParameters(t *testing.T) {
 	// Check that parameters are valid for decoding.
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(7, -4, 1, 8)
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-4, 1, 8)
 	if err != nil {
 		t.Error(err)
 	}

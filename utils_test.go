@@ -6,57 +6,85 @@ import (
 )
 
 func TestSymmetricModulo(t *testing.T) {
-	// Input values: fraction number (n), radix (r), expected modulo (em).
-	n := big.NewRat(-44979, 2401)
-	// Expected symmetric modulos.
-	var esm []*big.Int
-	sm := []int64{0, 3, 3, -46, 640, 5442, -44979}
-	for i := 0; i < len(sm); i++ {
-		n := big.NewInt(sm[i])
-		esm = append(esm, n)
-	}
-	// Parameters.
-	r := []int64{1, 7, 49, 343, 2401, 16807, 117649}
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(7, -4, 1, 16)
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
 	}
-	// Numerator from the given fraction.
-	n = isolateNumerator(n, params)
-	// Iterate over radix values.
-	for i := 0; i < len(r); i++ {
-		// Calculates the symmetric modulo.
-		m, err := symmetricModulo(n, r[i])
-		if err != nil {
-			t.Error(err)
+	// Expected modules.
+	em := []int64{0, 0, -5, 4, 3, 2, 1, -2, -1, 0, 0, 0, 0, 0, 0, 0}
+	// Polynomial length.
+	pl := polynomialLength(params)
+	// Rational number and first denominator of the progression (d^0=1, d^1=10, d^2=100, ...).
+	r := 981234500.0
+	d := 1.0
+
+	for i := 0; i < pl; i++ {
+		n := int64(r / d)
+		m := symmetricModulo(n)
+		if em[i] != m {
+			t.Errorf("expected %d but got %d", em[i], m)
 		}
-		// Check expected symmetric modulo.
-		// modulo != expected
-		if m.Cmp(esm[i]) == -1 || m.Cmp(esm[i]) == 1 {
-			t.Errorf("expected %s but got %s", esm[i].String(), m.String())
-		}
+		d *= float64(params.b)
 	}
 }
 
 func TestExpansion(t *testing.T) {
-	// Input values: number (n), radix (r).
-	f := big.NewRat(-44979, 2401)
-	// Create parameters (b, p, q, d).
-	params, err := NewParameters(7, -4, 1, 16)
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
 	}
-	n := isolateNumerator(f, params)
+	// Rational input value.
+	// Numerator after being separated from the fraction.
+	n := int64(981234500)
 	// Calculate expansion.
-	e, err := expansion(n, params)
+	e := expansion(n, params)
+	// Expected expansion.
+	ee := []int64{0, 0, -5, -5, 4, 2, 1, -2, 0, 1, 0, 0, 0, 0, 0, 0}
+	// Check if expansions have the same size.
+	if len(ee) != len(e) {
+		t.Errorf("expected expansion has %d elements but got %d", len(ee), len(e))
+	}
+	// Check if calculated expansion matches the expected values.
+	for i := 0; i < len(ee); i++ {
+		if e[i] != ee[i] {
+			t.Errorf("expected expansion of %v but got %v", ee, e)
+			break
+		}
+	}
+}
+
+func TestRationalToFraction(t *testing.T) {
+	// Rational input value.
+	r := 1097165.2727272727
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-3, 1, 16)
 	if err != nil {
 		t.Error(err)
 	}
-	// Expected expansion.
-	ee := []float64{3.0, 0.0, -1.0, 2.0, 2.0, -3.0}
-	// Check if calculated expansion matches the expected values of [3, 0, -1, 2, 2, -3].
-	if e[0] != ee[0] || e[1] != ee[1] || e[2] != ee[2] || e[3] != ee[3] || e[4] != ee[4] || e[5] != ee[5] {
-		t.Errorf("expected expansion of %v but got %v", ee, e)
+	// Generate fraction.
+	f := rationalToFraction(r, params)
+	// Expected fraction.
+	ef := big.NewRat(1097165272, 1000)
+	if f.Cmp(ef) != 0 {
+		t.Errorf("expected fraction %s but got %s", ef.String(), f.String())
+	}
+}
+
+func TestRoundUp(t *testing.T) {
+	// Rational value.
+	r := 1097165.2727272727
+	// Expected rounded rational.
+	er := 1097165.273
+	// Create parameters (p, q, d).
+	params, err := NewParameters(-3, 1, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	// Round up.
+	ru := roundUp(r, params)
+	if ru != er {
+		t.Errorf("expected rational %f but got %f", er, ru)
 	}
 }

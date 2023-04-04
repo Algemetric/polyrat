@@ -14,12 +14,12 @@ type Parameters struct {
 
 // NewParameters creates a struct that validates all the parameters
 // used for encoding and decoding.
-func NewParameters(b, p, q, d int) (*Parameters, error) {
+func NewParameters(p, q, d int) (*Parameters, error) {
 	// Setting up given parameters.
 	// These inputs are set so that they can inform
 	// the user about the parameters that caused an error.
 	params := new(Parameters)
-	params.b = b
+	params.b = Base
 	params.q = q
 	params.p = p
 	params.d = d
@@ -49,15 +49,6 @@ func (params *Parameters) MinPower() int {
 // Getter for degree.
 func (params *Parameters) Degree() int {
 	return params.d
-}
-
-// validateB validates criteria for the base.
-func (params *Parameters) validateB() error {
-	// b >= 2.
-	if params.b < 2 {
-		return ErrBIsLessThanTwo
-	}
-	return nil
 }
 
 // validateP validates criteria for the smallest power of expansion.
@@ -111,11 +102,6 @@ func (params *Parameters) validateD() error {
 func (params *Parameters) validate() error {
 	// Error variable.
 	var err error
-	// Validates base.
-	err = params.validateB()
-	if err != nil {
-		return err
-	}
 	// Validades smallest power of expansion.
 	err = params.validateP()
 	if err != nil {

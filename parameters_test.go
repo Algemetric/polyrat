@@ -4,24 +4,10 @@ import (
 	"testing"
 )
 
-func TestValidateB(t *testing.T) {
-	// Check if an error is thrown when b is less than 2.
-	// Create parameters (b, p, q, d).
-	_, err := NewParameters(1, 0, 0, 0)
-	// b is valid if >= 2.
-	if err == nil {
-		t.Error("an error should be thrown when b is less than 2")
-	} else {
-		if err.Error() != ErrBIsLessThanTwo.Error() {
-			t.Error(ErrBIsLessThanTwo.Error())
-		}
-	}
-}
-
 func TestValidateP(t *testing.T) {
 	// Check if an error is thrown when p is less than q.
-	// Create parameters (b, p, q, d).
-	_, err := NewParameters(2, 1, 1, 0)
+	// Create parameters (p, q, d).
+	_, err := NewParameters(1, 1, 0)
 	// p is valid if < q.
 	if err == nil {
 		t.Error("an error should be thrown when p is less than q")
@@ -32,7 +18,7 @@ func TestValidateP(t *testing.T) {
 	}
 
 	// Check if an error is thrown when p is greater than or equal to 0.
-	_, err = NewParameters(2, 0, 2, 0)
+	_, err = NewParameters(0, 2, 0)
 	if err == nil {
 		t.Error("an error should be thrown when p is greater than or equal to 0")
 	} else {
@@ -44,8 +30,8 @@ func TestValidateP(t *testing.T) {
 
 func TestValidateQ(t *testing.T) {
 	// Check if an error is thrown when q is less than or equal to 0.
-	// Create parameters (b, p, q, d).
-	_, err := NewParameters(2, -1, 0, 0)
+	// Create parameters (p, q, d).
+	_, err := NewParameters(-1, 0, 0)
 	// q is valid if > 0.
 	if err == nil {
 		t.Error("an error should be thrown when q is less than or equal to 0")
@@ -59,7 +45,7 @@ func TestValidateQ(t *testing.T) {
 func TestValidateD(t *testing.T) {
 	// Check if an error is thrown when d is not a power of 2.
 	// Create parameters (b, p, q, d).
-	_, err := NewParameters(2, -4, 1, 3)
+	_, err := NewParameters(-4, 1, 3)
 	// d is valid if it is a power of 2.
 	if err == nil {
 		t.Error("an error should be thrown when d is not a power of 2")
@@ -70,7 +56,7 @@ func TestValidateD(t *testing.T) {
 	}
 
 	// Check if an error is thrown when d is less than 1.
-	_, err = NewParameters(2, -4, 1, 0)
+	_, err = NewParameters(-4, 1, 0)
 	if err == nil {
 		t.Error("an error should be thrown when d is less than 1")
 	} else {
@@ -80,7 +66,7 @@ func TestValidateD(t *testing.T) {
 	}
 
 	// Check if an error is thrown when d is less than or equal to q plus the absolute value of p (d <= q + |p|).
-	_, err = NewParameters(2, -1, 9, 8)
+	_, err = NewParameters(-1, 9, 8)
 	if err == nil {
 		t.Error("an error should be thrown when d is less than or equal to q plus the absolute value of p")
 	} else {
