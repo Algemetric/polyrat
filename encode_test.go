@@ -6,8 +6,7 @@ import (
 
 // TestEncode tests the encoding of a rational number into a polynomial.
 func TestEncode(t *testing.T) {
-	// Rational number.
-	// 98123.45.
+	// Rational number 98123.45.
 	r := 98123.45
 	// Create parameters (b, p, q, d).
 	params, err := NewParameters(-4, 11, 16)

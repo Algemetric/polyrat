@@ -28,7 +28,6 @@ func Decode(code []int64, params *Parameters) (float64, error) {
 	// Calculates rational from fraction with "exact" flag.
 	r, e := f.Float64()
 	// If rational was not exact, then round it.
-	// TODO: check rationals ending in > 5 and < 5.
 	if !e {
 		r = roundUp(r, params)
 	}
