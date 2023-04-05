@@ -24,6 +24,36 @@ func TestDecode(t *testing.T) {
 	if dr != er {
 		t.Errorf("error decoding, expected %f but got %f", er, dr)
 	}
+
+	// Case for different decimal numbers.
+	// Encode every number to check the decoding and rounding.
+	r := []float64{123.01, 123.12, 123.23, 123.34, 123.45, 123.56, 123.67, 123.78, 123.89, 123.90}
+	// Create parameters (p, q, d).
+	params, err = NewParameters(-2, 11, 16)
+	if err != nil {
+		t.Error(err)
+	}
+	// Encode.
+	var cc [][]int64
+	for i := 0; i < len(r); i++ {
+		c, err := Encode(r[i], params)
+		if err != nil {
+			t.Error(err)
+			break
+		}
+		cc = append(cc, c)
+	}
+	// Decode.
+	for i := 0; i < len(cc); i++ {
+		dr, err := Decode(cc[i], params)
+		if err != nil {
+			t.Error(err)
+			break
+		}
+		if dr != r[i] {
+			t.Errorf("error decoding, expected %f but got %f", r[i], dr)
+		}
+	}
 }
 
 func TestEvaluationPowers(t *testing.T) {
