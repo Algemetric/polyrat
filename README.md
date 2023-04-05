@@ -22,7 +22,7 @@ This function receives `p`, `q`, and `d` and returns a reference to a structure 
 If we want to create a structure with `p = -4`, `q = 11`, and `d = 16`, then we instantiate the structure by issuing
 
 ```golang
-params, err := sim2d.NewParameters(-4, 11, 16)
+params, err := polyrat.NewParameters(-4, 11, 16)
 ```
 
 The error variable (i.e., `err`) must be checked for any returned error. If no error occurred, then the `params` variable can be passed to the encoding or decoding function.
@@ -38,7 +38,7 @@ func Encode(rat float64, params *Parameters) ([]int64, error) {...}
 To encode a rational number `r`, such as `98123.45`, we first create the parameters' structure `params` and execute the function such that a code (i.e., encoded number) will be generated or an error will be returned:
 
 ```golang
-c, err := sim2d.Encode(r, params)
+c, err := polyrat.Encode(r, params)
 ```
 
 The code `c` returned by the `Encode` function is a set of 64-bits integers. To make possible to decode the same original rational, the same set of parameters should be used.
@@ -54,5 +54,5 @@ func Decode(code []int64, params *Parameters) (float64, error) {...}
 The returned value `r` is the original rational, along with an error variable `err` showing if the procedure was carried without errors.
 
 ```golang
-r, err := sim2d.Decode(c, params)
+r, err := polyrat.Decode(c, params)
 ```
