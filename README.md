@@ -29,7 +29,7 @@ The error variable (i.e., `err`) must be checked for any returned error. If no e
 
 # Encode
 
-The `Encode` function encodes a rational number into a set of polynomial degrees. The function accepts as input a 64-bits rational number (float64) and bounds the precision by the lower power `p`. If a number exceeds the precision given by `p`, then such number will be truncaded. The function is defined as
+The `Encode` function encodes a rational number into a set of polynomial coefficients. The function accepts as input a 64-bits rational number (float64) and bounds the precision by the lower power `p`. If a number exceeds the precision given by `p`, then such number will be truncated. The function is defined as
 
 ```golang
 func Encode(rat float64, params *Parameters) ([]int64, error) {...}
