@@ -1,4 +1,4 @@
-package sim2d
+package polyrat
 
 import (
 	"math"

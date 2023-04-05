@@ -1,4 +1,4 @@
-package sim2d
+package polyrat
 
 // Encode encodes a rational number into a set of polynomial degrees.
 // The function accepts as input a 64-bit rational number (float64) and bounds the precision by the lower power p.
