@@ -9,7 +9,7 @@ Both the encoding and decoding (i.e., codec functions) procedures will use a set
 - Lower power (p);
 - Degree (d).
 
-Parameters will be created before using the encoding/decoding function, because the instantiation of parameters will perform a check of the relationships between values. Errors will be returned if such values do not hold the proper relationships. To create a new set of parameters we use the function:
+Parameters will be created before using the encoding and/or decoding functions, because the instantiation of parameters will perform a check on the relationships between values. Errors will be returned if such values do not hold the proper relationships. To create a new set of parameters we use the function:
 
 ```golang
 func NewParameters(p int, q int, d int) (*Parameters, error) {...}
