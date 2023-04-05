@@ -15,7 +15,9 @@ Parameters will be created before using the encoding/decoding function, because 
 func NewParameters(p int, q int, d int) (*Parameters, error) {...}
 ```
 
-This function receives `p`, `q`, and `d` and returns a reference to a structure containing the chosen parameters or an error showing why values were not defined correctly. For instance, if we want to create a structure with `p = -4`, `q = 11`, and `d = 16`, then we instantiate the structure by issuing
+This function receives `p`, `q`, and `d` and returns a reference to a structure containing the chosen parameters or an error showing why values were not defined correctly. The base `b` is already defined internally to be base `10`.
+
+If we want to create a structure with `p = -4`, `q = 11`, and `d = 16`, then we instantiate the structure by issuing
 
 ```golang
 params, err := sim2d.NewParameters(-4, 11, 16)
