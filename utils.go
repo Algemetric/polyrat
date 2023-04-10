@@ -27,7 +27,7 @@ func expansion(numerator int64, params *Parameters) []int64 {
 	pl := polynomialLength(params)
 	// Base.
 	b := int64(Base)
-	// First denominator of the sequence (d^0=1, d^1=10, d^2=100, ...).
+	// First denominator of the sequence (b^0=1, b^1=10, b^2=100, ...).
 	d := int64(1)
 	for i := 0; i < pl; i++ {
 		// Numerator (with truncation).
