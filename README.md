@@ -14,7 +14,7 @@ Both the encoding and decoding (i.e., codec functions) procedures will use a set
 Parameters will be created before using the encoding and/or decoding functions, because the instantiation of parameters will perform a check on the relationships between values. Errors will be returned if such values do not hold the proper relationships. To create a new set of parameters we use the function:
 
 ```golang
-func NewParameters(p int, q int, d int) (*Parameters, error) {...}
+func NewParameters(p, q, d int) (*Parameters, error) {...}
 ```
 
 This function receives `p`, `q`, and `d` and returns a reference to a structure containing the chosen parameters or an error showing why values were not defined correctly. The base `b` is already defined internally to be base `10`.
