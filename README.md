@@ -2,6 +2,20 @@
 
 This codec encodes the integer and fractional part of the fixed point number as a polynomial by encoding the integer part in the lower plaintext coefficients, and the fractional part in the upper plaintext coefficients.
 
+# Installing
+
+Polyrat is an easy to install Golang library. First, use `go get` to install the latest version of the library.
+
+```bash
+go get -u github.com/Algemetric/polyrat@latest
+```
+
+Next, include polyrat in your application:
+
+```bash
+import "github.com/Algemetric/polyrat"
+```
+
 # Parameters
 
 Both the encoding and decoding (i.e., codec functions) procedures will use a set of parameters, that need to be created beforehand. The set of parameters given to these functions is comprised by:
