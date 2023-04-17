@@ -1,4 +1,4 @@
-# Rational To Polynomial Encoder
+# Polyrat: rational to polynomial encoder
 
 This codec encodes the integer and fractional part of the fixed point number as a polynomial by encoding the integer part in the lower plaintext coefficients, and the fractional part in the upper plaintext coefficients.
 
