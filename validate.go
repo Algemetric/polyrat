@@ -15,11 +15,11 @@ func inputIsInvalid(input int64, params *Parameters) bool {
 	bp := math.Pow(b, e) - 1
 	// We define the lower and upper bounds by defining the equations in separated parts.
 	// Lower bound: -b/2 x (b^(q-p+1) - 1) / (b-1).
-	lb := -b / 2 * bp / (b - 1)
+	lb := ((-b / 2) * bp) / (b - 1)
 	// Upper bound: (b/2 - 1) x ((b^(q-p+1) - 1) / (b-1)).
-	ub := (b/2 - 1) * bp / (b - 1)
+	ub := (((b / 2) - 1) * bp) / (b - 1)
 	// Check if number is less than lower bound or greater than upper bound.
-	return input < int64(lb) || int64(ub) < input
+	return float64(input) < lb || ub < float64(input)
 }
 
 func validateDegreeOfCode(code []int64, params *Parameters) error {
