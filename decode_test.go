@@ -7,17 +7,40 @@ import (
 
 // TestDecode tests the decoding of a polynomial into a rational.
 func TestDecode(t *testing.T) {
-	// Expected rational for code: 98123.45.
-	er := 98123.45
-	// Code.
-	c := []int64{4, 2, 1, -2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5}
+	// Case for a special rational 83740034.866.
+	er := 83740034.866
+	// b = 10, p = -8, q = 12, d = 2048.
 	// Create parameters (p, q, d).
-	params, err := NewParameters(-4, 11, 16)
+	params, err := NewParameters(-8, 20, 2048)
+	if err != nil {
+		t.Error(err)
+	}
+	// Encode.
+	c, err := Encode(er, params)
+	if err != nil {
+		t.Error(err)
+	}
+	// Decode.
+	dr, err := Decode(c, params)
+	if err != nil {
+		t.Error(err)
+	}
+	// Check result.
+	if dr != er {
+		t.Errorf("error decoding, expected %f but got %f", er, dr)
+	}
+
+	// Expected rational for code: 98123.45.
+	er = 98123.45
+	// Code.
+	c = []int64{4, 2, 1, -2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5}
+	// Create parameters (p, q, d).
+	params, err = NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
 	}
 	// Decoded rational.
-	dr, err := Decode(c, params)
+	dr, err = Decode(c, params)
 	if err != nil {
 		t.Error(err)
 	}
