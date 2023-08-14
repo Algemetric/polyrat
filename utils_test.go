@@ -7,25 +7,25 @@ import (
 
 func TestSymmetricModulo(t *testing.T) {
 	// Create parameters (p, q, d).
-	params, err := NewParameters(-4, 11, 16)
+	p, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
 	}
 	// Expected modules.
 	em := []int64{0, 0, -5, 4, 3, 2, 1, -2, -1, 0, 0, 0, 0, 0, 0, 0}
 	// Polynomial length.
-	pl := polynomialLength(params)
+	pl := polynomialLength(p)
 	// Rational number and first denominator of the progression (d^0=1, d^1=10, d^2=100, ...).
 	r := 981234500.0
 	d := 1.0
 
 	for i := 0; i < pl; i++ {
 		n := int64(r / d)
-		m := symmetricModulo(n)
+		m := symmetricModulo(n, p)
 		if em[i] != m {
 			t.Errorf("expected %d but got %d", em[i], m)
 		}
-		d *= float64(params.b)
+		d *= float64(p.Base())
 	}
 }
 

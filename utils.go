@@ -5,9 +5,9 @@ import (
 	"math/big"
 )
 
-func symmetricModulo(n int64) int64 {
+func symmetricModulo(n int64, p *Parameters) int64 {
 	// Base.
-	b := int64(Base)
+	b := int64(p.Base())
 	// Remainder.
 	r := n % b
 	// This condition is the inverse of 0 <= r && r < m/2.
@@ -35,7 +35,7 @@ func expansion(numerator int64, params *Parameters) []int64 {
 		// The truncation will have the same effect.
 		n := numerator / d
 		// Symmetric modulo.
-		sm := symmetricModulo(n)
+		sm := symmetricModulo(n, params)
 		// Add to the set of expansions.
 		exp = append(exp, sm)
 		if exp[i] < 0 {
