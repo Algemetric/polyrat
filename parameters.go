@@ -78,14 +78,7 @@ func (params *Parameters) validateDegree() error {
 		return ErrDegreeIsLessThanOne
 	}
 	// degree is a power of 2.
-	// Log base 2 of degree.
-	floatD := float64(params.degree)
-	logD := math.Log2(floatD)
-	// Integer part of log base 2 of degree.
-	intLog := math.Round(logD)
-	// Recalculated degree.
-	d2 := math.Pow(2.0, intLog)
-	if floatD != d2 {
+	if degreeIsNotAPowerOfTwo(params.degree) {
 		return ErrDegreeIsNotAPowerOfTwo
 	}
 	// degree > greatPower + |leastPower|.

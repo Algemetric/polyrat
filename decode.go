@@ -7,7 +7,7 @@ import (
 // Decode decodes a polynomial into its original rational.
 func Decode(code []int64, params *Parameters) (float64, error) {
 	// Validate input.
-	err := validateDecodingParameters(code, params)
+	err := validateCodeDegree(code, params)
 	if err != nil {
 		return 0.0, err
 	}

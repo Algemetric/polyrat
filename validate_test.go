@@ -24,7 +24,7 @@ func TestValidateInput(t *testing.T) {
 	}
 }
 
-func TestValidateDegreeOfCode(t *testing.T) {
+func TestValidateCodeDegree(t *testing.T) {
 	// Check if an error is thrown when the degree of the code is not a power of 2.
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
@@ -54,20 +54,5 @@ func TestValidateDegreeOfCode(t *testing.T) {
 		if err.Error() != ErrCodeDegreeIsDifferentFromDegree.Error() {
 			t.Error(ErrCodeDegreeIsDifferentFromDegree.Error())
 		}
-	}
-}
-
-func TestValidateDecodingParameters(t *testing.T) {
-	// Check that parameters are valid for decoding.
-	// Create parameters.
-	params, err := NewParameters(-4, 1, 8)
-	if err != nil {
-		t.Error(err)
-	}
-	// Expected code.
-	c := []int64{2, -3, 0, 0, -3, 0, 1, -2}
-	err = validateDecodingParameters(c, params)
-	if err != nil {
-		t.Error("parameters should be valid for decoding")
 	}
 }

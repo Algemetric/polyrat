@@ -22,28 +22,24 @@ func inputIsInvalid(input int64, params *Parameters) bool {
 	return input < int64(lb) || int64(ub) < input
 }
 
+func degreeIsNotAPowerOfTwo(d int) bool {
+	// Code degree.
+	cd := 1
+	cd <<= int(math.Log2(float64(d)))
+	// Return if degree is a power of 2.
+	return d != cd
+}
+
 func validateCodeDegree(code []int64, params *Parameters) error {
 	// Code length.
 	cl := len(code)
-	// Code degree.
-	cd := 1
-	cd <<= int(math.Log2(float64(cl)))
 	// Check if code degree is a power of 2.
-	if cl != cd {
+	if degreeIsNotAPowerOfTwo(cl) {
 		return ErrCodeDegreeIsNotAPowerOfTwo
 	}
 	// Check if code degree is the same as the given degree.
-	if params.Degree() != cd {
+	if params.Degree() != cl {
 		return ErrCodeDegreeIsDifferentFromDegree
-	}
-	return nil
-}
-
-func validateDecodingParameters(code []int64, params *Parameters) error {
-	// Validate if degree of code is a power of 2.
-	err := validateCodeDegree(code, params)
-	if err != nil {
-		return err
 	}
 	return nil
 }
