@@ -22,7 +22,7 @@ func inputIsInvalid(input int64, params *Parameters) bool {
 	return input < int64(lb) || int64(ub) < input
 }
 
-func validateDegreeOfCode(code []int64, params *Parameters) error {
+func validateCodeDegree(code []int64, params *Parameters) error {
 	// Code length.
 	cl := len(code)
 	// Code degree.
@@ -41,7 +41,7 @@ func validateDegreeOfCode(code []int64, params *Parameters) error {
 
 func validateDecodingParameters(code []int64, params *Parameters) error {
 	// Validate if degree of code is a power of 2.
-	err := validateDegreeOfCode(code, params)
+	err := validateCodeDegree(code, params)
 	if err != nil {
 		return err
 	}
