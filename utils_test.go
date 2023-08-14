@@ -6,7 +6,7 @@ import (
 )
 
 func TestSymmetricModulo(t *testing.T) {
-	// Create parameters (p, q, d).
+	// Create parameters.
 	p, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
@@ -30,7 +30,7 @@ func TestSymmetricModulo(t *testing.T) {
 }
 
 func TestExpansion(t *testing.T) {
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
@@ -58,7 +58,7 @@ func TestExpansion(t *testing.T) {
 func TestRationalToFraction(t *testing.T) {
 	// Rational input value.
 	r := 1097165.2727272727
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-3, 1, 16)
 	if err != nil {
 		t.Error(err)
@@ -77,7 +77,7 @@ func TestRoundUp(t *testing.T) {
 	r := 1097165.2727272727
 	// Expected rounded rational.
 	er := 1097165.273
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-3, 1, 16)
 	if err != nil {
 		t.Error(err)

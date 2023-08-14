@@ -1,5 +1,5 @@
 package polyrat
 
 const (
-	Base = 10 // b >= 2.
+	Base = 10 // base >= 2.
 )

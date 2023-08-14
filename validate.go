@@ -8,7 +8,7 @@ import (
 // We just consider the case when the parity of the base is even.
 func inputIsInvalid(input int64, params *Parameters) bool {
 	// Define a common component of all bounds: b^(q-p+1) - 1.
-	b, q, p := float64(params.Base()), params.MaxPower(), params.MinPower()
+	b, q, p := float64(params.Base()), params.GreatPower(), params.LeastPower()
 	// Exponent: e = q-p+1.
 	e := float64(q - p + 1)
 	// b^(q-p+1) - 1
@@ -25,11 +25,11 @@ func inputIsInvalid(input int64, params *Parameters) bool {
 func validateDegreeOfCode(code []int64, params *Parameters) error {
 	// Code degree.
 	cd := len(code)
-	// Check if d is a power of 2.
-	// Log base 2 of d.
+	// Check if code degree is a power of 2.
+	// Log base 2 of code degree.
 	floatD := float64(cd)
 	logD := math.Log2(floatD)
-	// Integer part of log base 2 of d.
+	// Integer part of log base 2 of code degree.
 	intLog := math.Round(logD)
 	// Code degree recalculated.
 	cdr := math.Pow(2.0, intLog)

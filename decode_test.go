@@ -11,7 +11,7 @@ func TestDecode(t *testing.T) {
 	er := 98123.45
 	// Code.
 	c := []int64{4, 2, 1, -2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5}
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
@@ -28,7 +28,7 @@ func TestDecode(t *testing.T) {
 	// Case for different decimal numbers.
 	// Encode every number to check the decoding and rounding.
 	r := []float64{123.01, 123.12, 123.23, 123.34, 123.45, 123.56, 123.67, 123.78, 123.89, 123.90}
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err = NewParameters(-2, 11, 16)
 	if err != nil {
 		t.Error(err)
@@ -57,7 +57,7 @@ func TestDecode(t *testing.T) {
 }
 
 func TestEvaluationPowers(t *testing.T) {
-	// Create parameters (b, p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)

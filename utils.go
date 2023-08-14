@@ -18,7 +18,7 @@ func symmetricModulo(n int64, p *Parameters) int64 {
 }
 
 func polynomialLength(params *Parameters) int {
-	return params.MaxPower() + (-1 * params.MinPower()) + 1
+	return params.GreatPower() + (-1 * params.LeastPower()) + 1
 }
 
 func expansion(numerator int64, params *Parameters) []int64 {
@@ -26,7 +26,7 @@ func expansion(numerator int64, params *Parameters) []int64 {
 	// Length of the polynomial.
 	pl := polynomialLength(params)
 	// Base.
-	b := int64(Base)
+	b := int64(params.Base())
 	// First denominator of the sequence (d^0=1, d^1=10, d^2=100, ...).
 	d := int64(1)
 	for i := 0; i < pl; i++ {
@@ -48,10 +48,10 @@ func expansion(numerator int64, params *Parameters) []int64 {
 
 func parseRational(rat float64, params *Parameters) int64 {
 	// Absolute value of p.
-	p := float64(-1 * params.MinPower())
+	p := float64(-1 * params.LeastPower())
 	// Base.
 	b := float64(params.Base())
-	// Base to the power of minimal power: b^(|p|).
+	// Base to the power of minimal power: base^(|leastPower|).
 	bp := math.Pow(b, p)
 	// Rational transformed.
 	n := math.Trunc(rat * bp)
@@ -74,22 +74,22 @@ func dotProduct(v1 []*big.Rat, v2 []int64) *big.Rat {
 }
 
 func rationalToFraction(r float64, params *Parameters) *big.Rat {
-	// Absolute value of p.
-	absP := math.Abs(float64(params.MinPower()))
-	// Base to the power of the absolute value of p.
+	// Absolute value of the least power.
+	absP := math.Abs(float64(params.LeastPower()))
+	// Base to the power of the absolute value of the least power.
 	bPowP := math.Pow(float64(params.Base()), absP)
-	// Generate numerator by multiplying rational by b^{|p|} and taking the integer part.
+	// Generate numerator by multiplying rational by base^{|leastPower|} and taking the integer part.
 	n := int64(math.Trunc(r * bPowP))
-	// Generate denominator as b^{|p|}.
+	// Generate denominator as base^{|leastPower|}.
 	d := int64(bPowP)
 	// Generate fraction
 	return big.NewRat(n, d)
 }
 
-// roundUp rounds a float up to p (minimal power) decimal places.
+// roundUp rounds a float up to "least power" decimal places.
 func roundUp(r float64, params *Parameters) float64 {
-	// Base to the power of the absolute value of p.
-	p := math.Pow(float64(params.Base()), float64(-1*params.MinPower()))
+	// Base to the power of the absolute value of the least power.
+	p := math.Pow(float64(params.Base()), float64(-1*params.LeastPower()))
 	// Digit.
 	d := p * r
 	return math.Ceil(d) / p

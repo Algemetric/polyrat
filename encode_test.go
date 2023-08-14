@@ -8,7 +8,7 @@ import (
 func TestEncode(t *testing.T) {
 	// Rational number 98123.45.
 	r := 98123.45
-	// Create parameters (b, p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-4, 11, 16)
 	if err != nil {
 		t.Error(err)
@@ -32,7 +32,7 @@ func TestEncode(t *testing.T) {
 
 	// Check that numerator -523187 does not raise an error.
 	r = -5231.87
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err = NewParameters(-2, 3, 16)
 	if err != nil {
 		t.Error(err)

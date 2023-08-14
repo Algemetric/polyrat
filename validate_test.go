@@ -5,9 +5,9 @@ import (
 )
 
 func TestValidateInput(t *testing.T) {
-	// Check range when b is EVEN.
-	// In our case b will always be even since we defined base 10 as a constant.
-	// Create parameters (p, q, d).
+	// Check range when base is EVEN.
+	// In our case base will always be even since we defined base 10 as a constant.
+	// Create parameters.
 	params, err := NewParameters(-2, 3, 16)
 	if err != nil {
 		t.Error(err)
@@ -28,7 +28,7 @@ func TestValidateDegreeOfCode(t *testing.T) {
 	// Check if an error is thrown when the degree of the code is not a power of 2.
 	// Input code.
 	c := []int64{2, -3, 0, 0, -3, 0, 1}
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-2, 3, 16)
 	if err != nil {
 		t.Error(err)
@@ -59,7 +59,7 @@ func TestValidateDegreeOfCode(t *testing.T) {
 
 func TestValidateDecodingParameters(t *testing.T) {
 	// Check that parameters are valid for decoding.
-	// Create parameters (p, q, d).
+	// Create parameters.
 	params, err := NewParameters(-4, 1, 8)
 	if err != nil {
 		t.Error(err)

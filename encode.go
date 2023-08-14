@@ -22,13 +22,13 @@ func generateCode(exp []int64, params *Parameters) []int64 {
 	// Polynomial length.
 	pl := polynomialLength(params)
 	// Initiate code with members of the expansion from -p to the end of the vector.
-	code := exp[-params.MinPower():]
+	code := exp[-params.LeastPower():]
 	// d - l gives the number of zeros to be concatenated in the vector.
 	for i := 0; i < (params.Degree() - pl); i++ {
 		code = append(code, 0)
 	}
 	// Concatenate to the code, from 0 to (-p) - 1, the elements of the expansion.
-	for i := 0; i < -params.MinPower(); i++ {
+	for i := 0; i < -params.LeastPower(); i++ {
 		code = append(code, -int64(exp[i]))
 	}
 	// Return code.

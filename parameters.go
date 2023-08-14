@@ -2,27 +2,25 @@ package polyrat
 
 import "math"
 
-// Parameters struct organizes the base, high power, low power
+// Parameters struct organizes the base, great power, least power
 // and polynomial degree information given to the encoding and
 // decoding functions.
 type Parameters struct {
-	b int // b is the base (modulo).
-	q int // q is the higher power.
-	p int // p is the lower power.
-	d int // d is the degree of the polynomial.
+	base       int // Base (modulo).
+	greatPower int // Great power.
+	leastPower int // Least power.
+	degree     int // Degree of the polynomial.
 }
 
 // NewParameters creates a struct that validates all the parameters
 // used for encoding and decoding.
-func NewParameters(p, q, d int) (*Parameters, error) {
+func NewParameters(leastPower, greatPower, degree int) (*Parameters, error) {
 	// Setting up given parameters.
-	// These inputs are set so that they can inform
-	// the user about the parameters that caused an error.
 	params := new(Parameters)
-	params.b = Base
-	params.q = q
-	params.p = p
-	params.d = d
+	params.base = Base
+	params.greatPower = greatPower
+	params.leastPower = leastPower
+	params.degree = degree
 	// Validation of parameters.
 	err := params.validate()
 	if err != nil {
@@ -33,67 +31,67 @@ func NewParameters(p, q, d int) (*Parameters, error) {
 
 // Getter for base.
 func (params *Parameters) Base() int {
-	return params.b
+	return params.base
 }
 
-// Getter for higher power.
-func (params *Parameters) MaxPower() int {
-	return params.q
+// Getter for great power.
+func (params *Parameters) GreatPower() int {
+	return params.greatPower
 }
 
-// Getter for lower power.
-func (params *Parameters) MinPower() int {
-	return params.p
+// Getter for least power.
+func (params *Parameters) LeastPower() int {
+	return params.leastPower
 }
 
 // Getter for degree.
 func (params *Parameters) Degree() int {
-	return params.d
+	return params.degree
 }
 
-// validateP validates criteria for the smallest power of expansion.
-func (params *Parameters) validateP() error {
-	// p < q.
-	if params.p >= params.q {
-		return ErrPIsLessThanQ
+// validateLeastPower validates criteria for the least power of expansion.
+func (params *Parameters) validateLeastPower() error {
+	// leastPower < greatPower.
+	if params.leastPower >= params.greatPower {
+		return ErrLeastPowerIsLessThanGreatPower
 	}
-	// p < 0.
-	if params.p >= 0 {
-		return ErrPIsGreaterThanOrEqualToZero
+	// leastPower < 0.
+	if params.leastPower >= 0 {
+		return ErrLeastPowerIsGreaterThanOrEqualToZero
 	}
 	return nil
 }
 
-// validateQ validates criteria for the greatest power of expansion.
-func (params *Parameters) validateQ() error {
-	// q > 0.
-	if params.q <= 0 {
-		return ErrQIsLessThanOrEqualToZero
+// validateGreatPower validates criteria for the greatest power of expansion.
+func (params *Parameters) validateGreatPower() error {
+	// greatPower > 0.
+	if params.greatPower <= 0 {
+		return ErrGreatPowerIsLessThanOrEqualToZero
 	}
 	return nil
 }
 
-// validateD validates criteria for the polynomial degree.
-func (params *Parameters) validateD() error {
-	// d >= 1.
-	if params.d < 1 {
-		return ErrDIsLessThanOne
+// validateDegree validates criteria for the polynomial degree.
+func (params *Parameters) validateDegree() error {
+	// degree >= 1.
+	if params.degree < 1 {
+		return ErrDegreeIsLessThanOne
 	}
-	// d is a power of 2.
-	// Log base 2 of d.
-	floatD := float64(params.d)
+	// degree is a power of 2.
+	// Log base 2 of degree.
+	floatD := float64(params.degree)
 	logD := math.Log2(floatD)
-	// Integer part of log base 2 of d.
+	// Integer part of log base 2 of degree.
 	intLog := math.Round(logD)
-	// Recalculated d.
+	// Recalculated degree.
 	d2 := math.Pow(2.0, intLog)
 	if floatD != d2 {
-		return ErrDIsNotAPowerOfTwo
+		return ErrDegreeIsNotAPowerOfTwo
 	}
-	// d > q + |p|.
-	absP := math.Abs(float64(params.p))
-	if params.d <= (params.q + int(absP)) {
-		return ErrDIsLessThanOrEqualToQPlusP
+	// degree > greatPower + |leastPower|.
+	absP := math.Abs(float64(params.leastPower))
+	if params.degree <= (params.greatPower + int(absP)) {
+		return ErrDegreeIsNotGreaterThanGreatPowerPlusLeastPower
 	}
 	return nil
 }
@@ -102,18 +100,18 @@ func (params *Parameters) validateD() error {
 func (params *Parameters) validate() error {
 	// Error variable.
 	var err error
-	// Validades smallest power of expansion.
-	err = params.validateP()
+	// Validades least power of expansion.
+	err = params.validateLeastPower()
 	if err != nil {
 		return err
 	}
-	// Validades smallest power of expansion.
-	err = params.validateQ()
+	// Validades great power of expansion.
+	err = params.validateGreatPower()
 	if err != nil {
 		return err
 	}
 	// Validates degree.
-	err = params.validateD()
+	err = params.validateDegree()
 	if err != nil {
 		return err
 	}

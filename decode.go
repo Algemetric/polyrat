@@ -14,11 +14,11 @@ func Decode(code []int64, params *Parameters) (float64, error) {
 	// Code length.
 	l := len(code)
 	var original []int64
-	for i := 0; i < -params.MinPower(); i++ {
-		o := -1 * code[l+params.MinPower()+i]
+	for i := 0; i < -params.LeastPower(); i++ {
+		o := -1 * code[l+params.LeastPower()+i]
 		original = append(original, int64(o))
 	}
-	for i := 0; i < params.MaxPower()+1; i++ {
+	for i := 0; i < params.GreatPower()+1; i++ {
 		original = append(original, code[i])
 	}
 	// Decoding powers used for evaluation.
@@ -42,7 +42,7 @@ func evaluationPowers(params *Parameters) []*big.Rat {
 	for i := 0; i < pl; i++ {
 		// Fraction.
 		f := big.NewRat(1, 1)
-		pPlusI := int64(params.MinPower() + i)
+		pPlusI := int64(params.LeastPower() + i)
 		base := big.NewInt(int64(params.Base()))
 		if pPlusI < 0 {
 			// Define fractions.

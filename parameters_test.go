@@ -4,74 +4,75 @@ import (
 	"testing"
 )
 
-func TestValidateP(t *testing.T) {
-	// Check if an error is thrown when p is less than q.
-	// Create parameters (p, q, d).
+func TestValidateLeastPower(t *testing.T) {
+	// Check if an error is thrown when least power is less than great power.
+	// Create parameters.
 	_, err := NewParameters(1, 1, 0)
-	// p is valid if < q.
+	// leastPower is valid if < greatPower.
 	if err == nil {
-		t.Error("an error should be thrown when p is less than q")
+		t.Error("an error should be thrown when least power is less than great power")
 	} else {
-		if err.Error() != ErrPIsLessThanQ.Error() {
-			t.Error(ErrPIsLessThanQ.Error())
+		if err.Error() != ErrLeastPowerIsLessThanGreatPower.Error() {
+			t.Error(ErrLeastPowerIsLessThanGreatPower.Error())
 		}
 	}
 
-	// Check if an error is thrown when p is greater than or equal to 0.
+	// Check if an error is thrown when least power is greater than or equal to 0.
 	_, err = NewParameters(0, 2, 0)
 	if err == nil {
-		t.Error("an error should be thrown when p is greater than or equal to 0")
+		t.Error("an error should be thrown when least power is greater than or equal to 0")
 	} else {
-		if err.Error() != ErrPIsGreaterThanOrEqualToZero.Error() {
-			t.Error(ErrPIsGreaterThanOrEqualToZero.Error())
+		if err.Error() != ErrLeastPowerIsGreaterThanOrEqualToZero.Error() {
+			t.Error(ErrLeastPowerIsGreaterThanOrEqualToZero.Error())
 		}
 	}
 }
 
-func TestValidateQ(t *testing.T) {
-	// Check if an error is thrown when q is less than or equal to 0.
-	// Create parameters (p, q, d).
+func TestValidateGreatPower(t *testing.T) {
+	// Check if an error is thrown when great power is less than or equal to 0.
+	// Create parameters.
 	_, err := NewParameters(-1, 0, 0)
-	// q is valid if > 0.
+	// Great power is valid if > 0.
 	if err == nil {
-		t.Error("an error should be thrown when q is less than or equal to 0")
+		t.Error("an error should be thrown when great power is less than or equal to 0")
 	} else {
-		if err.Error() != ErrQIsLessThanOrEqualToZero.Error() {
-			t.Error(ErrQIsLessThanOrEqualToZero.Error())
+		if err.Error() != ErrGreatPowerIsLessThanOrEqualToZero.Error() {
+			t.Error(ErrGreatPowerIsLessThanOrEqualToZero.Error())
 		}
 	}
 }
 
-func TestValidateD(t *testing.T) {
-	// Check if an error is thrown when d is not a power of 2.
-	// Create parameters (b, p, q, d).
+func TestValidateDegree(t *testing.T) {
+	// Check if an error is thrown when degree is not a power of 2.
+	// Create parameters.
 	_, err := NewParameters(-4, 1, 3)
-	// d is valid if it is a power of 2.
+	// Degree is valid if it is a power of 2.
 	if err == nil {
-		t.Error("an error should be thrown when d is not a power of 2")
+		t.Error("an error should be thrown when degree is not a power of 2")
 	} else {
-		if err.Error() != ErrDIsNotAPowerOfTwo.Error() {
-			t.Error(ErrDIsNotAPowerOfTwo.Error())
+		if err.Error() != ErrDegreeIsNotAPowerOfTwo.Error() {
+			t.Error(ErrDegreeIsNotAPowerOfTwo.Error())
 		}
 	}
 
-	// Check if an error is thrown when d is less than 1.
+	// Check if an error is thrown when degree is less than 1.
 	_, err = NewParameters(-4, 1, 0)
 	if err == nil {
-		t.Error("an error should be thrown when d is less than 1")
+		t.Error("an error should be thrown when degree is less than 1")
 	} else {
-		if err.Error() != ErrDIsLessThanOne.Error() {
-			t.Error(ErrDIsLessThanOne.Error())
+		if err.Error() != ErrDegreeIsLessThanOne.Error() {
+			t.Error(ErrDegreeIsLessThanOne.Error())
 		}
 	}
 
-	// Check if an error is thrown when d is less than or equal to q plus the absolute value of p (d <= q + |p|).
+	// Check if an error is thrown when degree is less than or equal to great power
+	// plus the absolute value of the least power (degree <= greatPower + |leastPower|).
 	_, err = NewParameters(-1, 9, 8)
 	if err == nil {
-		t.Error("an error should be thrown when d is less than or equal to q plus the absolute value of p")
+		t.Error("an error should be thrown when degree is less than or equal to the great power plus the absolute value of the least power")
 	} else {
-		if err.Error() != ErrDIsLessThanOrEqualToQPlusP.Error() {
-			t.Error(ErrDIsLessThanOrEqualToQPlusP.Error())
+		if err.Error() != ErrDegreeIsNotGreaterThanGreatPowerPlusLeastPower.Error() {
+			t.Error(ErrDegreeIsNotGreaterThanGreatPowerPlusLeastPower.Error())
 		}
 	}
 }
