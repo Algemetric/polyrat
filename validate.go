@@ -23,18 +23,13 @@ func inputIsInvalid(input int64, params *Parameters) bool {
 }
 
 func validateDegreeOfCode(code []int64, params *Parameters) error {
+	// Code length.
+	cl := len(code)
 	// Code degree.
-	cd := len(code)
+	cd := 1
+	cd <<= int(math.Log2(float64(cl)))
 	// Check if code degree is a power of 2.
-	// Log base 2 of code degree.
-	floatD := float64(cd)
-	logD := math.Log2(floatD)
-	// Integer part of log base 2 of code degree.
-	intLog := math.Round(logD)
-	// Code degree recalculated.
-	cdr := math.Pow(2.0, intLog)
-	// Check if code degree is a power of 2.
-	if floatD != cdr {
+	if cl != cd {
 		return ErrCodeDegreeIsNotAPowerOfTwo
 	}
 	// Check if code degree is the same as the given degree.
