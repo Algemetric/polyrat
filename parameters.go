@@ -2,6 +2,10 @@ package polyrat
 
 import "math"
 
+const (
+	Base = 10 // base >= 2.
+)
+
 // Parameters struct organizes the base, great power, least power
 // and polynomial degree information given to the encoding and
 // decoding functions.

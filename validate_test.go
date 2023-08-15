@@ -14,12 +14,12 @@ func TestValidateInput(t *testing.T) {
 	}
 	// Check that input -523187 is in the message space [-555555, 444444].
 	n := int64(-523187)
-	if inputIsInvalid(n, params) {
+	if inputNotInTheMessageSpace(n, params) {
 		t.Error("an error should not be thrown because the numerator is in the message space range")
 	}
 	// Check that input 455192 is NOT in the message space [-555555, 444444].
 	n = 455192
-	if !inputIsInvalid(n, params) {
+	if !inputNotInTheMessageSpace(n, params) {
 		t.Error("an error should be thrown because the numerator is not in the message space range")
 	}
 }

@@ -7,8 +7,8 @@ func Encode(rat float64, params *Parameters) ([]int64, error) {
 	// Transforms a rational number into an integer.
 	n := parseRational(rat, params)
 	// Input validation.
-	if inputIsInvalid(n, params) {
-		return nil, ErrNumeratorIsNotInTheMessageSpaceRange
+	if inputNotInTheMessageSpace(n, params) {
+		return nil, ErrNumeratorIsNotInTheMessageSpace
 	}
 	// Calculate expansion.
 	e := expansion(n, params)

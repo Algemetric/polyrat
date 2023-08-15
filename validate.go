@@ -4,9 +4,9 @@ import (
 	"math"
 )
 
-// inputIsInvalid checks if the number given to the function is in the input space.
+// inputNotInTheMessageSpace checks if the given number is in the message space.
 // We just consider the case when the parity of the base is even.
-func inputIsInvalid(input int64, params *Parameters) bool {
+func inputNotInTheMessageSpace(input int64, params *Parameters) bool {
 	// Define a common component of all bounds: b^(gp-lp+1) - 1.
 	b, gp, lp := float64(params.Base()), params.GreatPower(), params.LeastPower()
 	// Exponent: e = gp-lp+1.

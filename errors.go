@@ -9,7 +9,7 @@ var (
 	ErrLeastPowerIsLessThanGreatPower                 = errors.New("the least power should be less than the great power")
 	ErrLeastPowerIsGreaterThanOrEqualToZero           = errors.New("the least power should be less than 0")
 	ErrGreatPowerIsLessThanOrEqualToZero              = errors.New("great power should be greater than 0")
-	ErrNumeratorIsNotInTheMessageSpaceRange           = errors.New("numerator should be inside the message space range")
+	ErrNumeratorIsNotInTheMessageSpace                = errors.New("numerator should be inside the message space range")
 	ErrCodeDegreeIsNotAPowerOfTwo                     = errors.New("code degree should be a power of 2")
 	ErrCodeDegreeIsDifferentFromDegree                = errors.New("code degree is different from the acceptable degree")
 )
